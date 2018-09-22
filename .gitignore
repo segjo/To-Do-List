@@ -31,3 +31,5 @@ jspm_packages
 ###################
 **/test/coverage
 report
+nbproject/project.properties
+nbproject/project.xml
