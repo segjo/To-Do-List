@@ -13,7 +13,7 @@
 
 // Use in the “Post-Receive URLs” section of your GitHub repo.
 
-echo ("Git Pull:<br />\n");
+echo ("Git pull:<br />\n");
 echo shell_exec( "cd /var/www/html/To-Do-List && git reset HEAD --hard && git pull" );
 
 

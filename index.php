@@ -11,6 +11,7 @@
         <title></title>
     </head>
     <body>
-HELLO WORLD 17.10.2018
+
+<a  href="tmpGitPull.php">Git pull</a>
     </body>
 </html>
