@@ -1,23 +1,20 @@
 <?php
 class Item{
 
-    public function get_user(){//TODO
-        $user = $this->model('Users');
-        $user->name = 'Arslan'; 
+    public function get_item(){//TODO
 
-        $this->view('json-output',['output'=>$user->name]);
     }
 
-    public function add_user(){//TODO
-        $this->view('json-output',['output'=>'add_user']);
+    public function add_item(){//TODO
+        
     }
 
-    public function update_user(){//TODO
-        $this->view('json-output',['output'=>'update_user']);
+    public function update_item(){//TODO
+
     }
 
-    public function delete_user(){//TODO
-        $this->view('json-output',['output'=>'delete_user']);
+    public function delete_item(){//TODO
+
     }
 
 }

@@ -21,10 +21,14 @@
      require_once('../credentials.php');
       if(isset($_POST['submit'])){
         $username = $_POST['username']; $password = $_POST['password'];
+        $access = date("Y/m/d H:i:s");
         if($username === LOGIN_USER && $password === LOGIN_PASSWORD){
+            syslog(LOG_NOTICE, "Login $username successfull: $access {$_SERVER['REMOTE_ADDR']} ({$_SERVER['HTTP_USER_AGENT']})");
           $_SESSION['login'] = true; header('LOCATION:index.php'); die();
         } {
-          echo "<div class='alert alert-danger'>Username and Password do not match.</div>";
+            
+            syslog(LOG_NOTICE, "Login $username failed: $access {$_SERVER['REMOTE_ADDR']} ({$_SERVER['HTTP_USER_AGENT']})");
+            echo "<div class='alert alert-danger'>Username and Password do not match.</div>";
         }
 
       }
