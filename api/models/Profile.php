@@ -9,25 +9,31 @@ class Profile {
     }
 
     public function create() {//TODO
-        $email = "dw";
-        $username = "test";
+        if(isset($_POST["userName"])&&isset($_POST["firstName"])&&isset($_POST["lastName"])&&isset($_POST["email"])&&isset($_POST["password"])){
+            $userName=$_POST["userName"];
+            $firstName=$_POST["firstName"];
+            $lastName=$_POST["lastName"];
+            $email=$_POST["email"];
+            $password=$_POST["password"];   
+        }          
 
-        $sql = "SELECT * FROM User WHERE Email = '" . $email . "' OR UserName = '" . $username . "'";
+
+        $sql = "SELECT * FROM User WHERE Email = '" . $email . "' OR UserName = '" . $userName . "'";
 
         $select = $this->db->prepare($sql);
         $select->execute();
         $count = $select->rowCount();
 
         if ($count > 0) {
-            //Email existiert bereits
+            echo "Benutzername / E-Mail already exist";
             return false;
         }
 
 
         $salt = uniqid(mt_rand());
 
-        $statement = $this->db->prepare("INSERT INTO User (UserId, Name, LastName, Email, EmailActivated, UserName, EncryptedPassword, Salt, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)");
-        $insert = $statement->execute(array(NULL, 'adawd', 'awdaw', 'adwd2w2@adwaw', '0', 'awdawd', hash_hmac("sha256", 'Passwort', $salt), $salt, '2018-10-17', NULL));
+        $statement = $this->db->prepare("INSERT INTO User (UserId, Name, LastName, Email, EmailActivated, UserName, Image, EncryptedPassword, Salt, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, '2018-10-17', NULL));
         if ($insert) {
             echo 'created Profile ';
             return true;
@@ -48,16 +54,17 @@ class Profile {
             $password = htmlspecialchars($_POST["password"]);
 
 
-            $sql = "SELECT TOP 1 `UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $username . "' LIMIT 1";
-            $select = $this->db->query($sql);
-
-            if (count($select) > 0) {
-                foreach ($pdo->query($select) as $row) {
+            $sql = "SELECT `UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $username . "' LIMIT 1";
+            $sth = $this->db->prepare($sql);
+            $sth->execute();
+            $result = $sth->fetchAll();
+            if (count($result) > 0) {
+                foreach ($result as $row) {
                     $dbSalt = $row['Salt'];
                     $dbHashedPassword = $row['EncryptedPassword'];
                 }
                 if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
-                    $_SESSION["LOGIN"] = true;
+                    $_SESSION['Login'] = true;
                     echo "Login erfolgreich";
                     return true;
                 } else {

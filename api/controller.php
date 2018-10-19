@@ -46,7 +46,6 @@ switch ($urlPaths[URI_1]) {
         if (URI_REQ == 'DELETE') {
             $returnValue = $profileModel->delete();
         }
-        echo $profileModel->create();
 
 
         break;
@@ -55,6 +54,13 @@ switch ($urlPaths[URI_1]) {
         break;
     case 'item':
         $this->update_user();
+        break;
+    
+    default :
+        echo 'Funktionen:<br />';
+        echo 'POST /profile/create/ PARAM String userName, String firstName, String lastName, String email, String password <br />';
+        echo 'POST /profile/login/ PARAM String userName, String password<br />';
+        
         break;
 }
 
