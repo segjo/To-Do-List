@@ -21,7 +21,7 @@ ini_set('display_errors', 'on');
 //$profileModel= new Profile();
 
 
-$url = $_SERVER[REQUEST_URI];
+$url =  $_SERVER['REQUEST_URI'];
 $values = parse_url($url);
 $urlPaths = $host = explode('/', $values['path']);
 

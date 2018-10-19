@@ -10,8 +10,9 @@ class Profile {
 
     public function create() {//TODO
         $email = "dw";
+        $username = "test";
 
-        $sql = "SELECT * FROM User WHERE Email = '" . $email . "'";
+        $sql = "SELECT * FROM User WHERE Email = '" . $email . "' OR UserName = '" . $username . "'";
 
         $select = $this->db->prepare($sql);
         $select->execute();
@@ -23,10 +24,10 @@ class Profile {
         }
 
 
-
+        $salt = uniqid(mt_rand());
 
         $statement = $this->db->prepare("INSERT INTO User (UserId, Name, LastName, Email, EmailActivated, UserName, EncryptedPassword, Salt, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)");
-        $insert = $statement->execute(array(NULL, 'adawd', 'awdaw', 'adwd2w@adwaw', '0', 'awdawd', 'fefe', 'efef', '2018-10-17', NULL));
+        $insert = $statement->execute(array(NULL, 'adawd', 'awdaw', 'adwd2w2@adwaw', '0', 'awdawd', hash_hmac("sha256", 'Passwort', $salt), $salt, '2018-10-17', NULL));
         if ($insert) {
             echo 'created Profile ';
             return true;
@@ -42,9 +43,34 @@ class Profile {
     }
 
     public function login() {//TODO
-        foreach ($this->db->query('SELECT * from User') as $row) {
-            var_dump($row);
+        if (isset($_POST["userName"]) && isset($_POST["password"])) {
+            $username = htmlspecialchars($_POST["userName"]);
+            $password = htmlspecialchars($_POST["password"]);
+
+
+            $sql = "SELECT TOP 1 `UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $username . "' LIMIT 1";
+            $select = $this->db->query($sql);
+
+            if (count($select) > 0) {
+                foreach ($pdo->query($select) as $row) {
+                    $dbSalt = $row['Salt'];
+                    $dbHashedPassword = $row['EncryptedPassword'];
+                }
+                if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
+                    $_SESSION["LOGIN"] = true;
+                    echo "Login erfolgreich";
+                    return true;
+                } else {
+                    echo "Passwort falsch";
+                }
+            }
+        } else {
+            echo "Login Benutername und Passwort eingeben";
+            return false;
         }
+
+        //if (hash_hmac("sha256", $_POST['password'], $saltFromDatabase) === $hashFromDatabase)
+        //$login = true;
     }
 
 }
