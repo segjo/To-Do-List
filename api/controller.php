@@ -11,6 +11,7 @@ define("URI_2", 4);  //create, Login
 define("URI_REQ", $_SERVER[REQUEST_METHOD]);
 
 ini_set('display_errors', 'on');
+date_default_timezone_set("Europe/Zurich");
 
 
 
@@ -21,19 +22,28 @@ ini_set('display_errors', 'on');
 $url = $_SERVER['REQUEST_URI'];
 
 $values = parse_url($url);
-        $returnValue = array(
-            'profile create' => array(
-                'call' => 'POST',
-                'path' => '/profile/create/',
-                'param' => 'String userName, String firstName, String lastName, String email, String password',
-            ),
-            'profile login' => array(
-                'call' => 'POST',
-                'path' => '/profile/login/',
-                'param' => 'String userName, String password',
-            )
-        );
-        
+$returnValue = array(
+    'profile create' => array(
+        'call' => 'POST',
+        'path' => '/api/profile/create/',
+        'param' => 'String userName, String firstName, String lastName, String email, String password',
+    ),
+    'profile login' => array(
+        'call' => 'POST',
+        'path' => '/api/profile/login/',
+        'param' => 'String userName, String password',
+    )
+);
+if (isLoggedIn()) {
+    $returnValue = array(
+        'profile delete' => array(
+            'call' => 'DELETE',
+            'path' => '/api/profile/{userId}',
+            'param' => '',
+        ),
+    );
+}
+
 $urlPaths = $host = explode('/', $values['path']);
 
 try {
@@ -62,8 +72,17 @@ switch ($urlPaths[URI_1]) {
                 $returnValue = array('Response' => 400);
             }
         }
-        if (URI_REQ == 'DELETE' && needLogin()) {
-            $returnValue = $profileModel->delete();
+        if (URI_REQ == 'DELETE') {
+            if (isLoggedIn()) {
+                if (isset($urlPaths[URI_2])) {
+                    $userId = $urlPaths[URI_2];
+                    $returnValue = $profileModel->delete($userId);
+                } else {
+                    $returnValue = array('Response' => 400);
+                }
+            } else {
+                $returnValue = array('Response' => 401);
+            }
         }
 
 
@@ -74,17 +93,15 @@ switch ($urlPaths[URI_1]) {
     case 'item':
         $this->update_user();
         break;
-
 }
 
-function needLogin(){
+function isLoggedIn() {
     if (!isset($_SESSION['login'])) {
         return false;
-}else{
-    return true;
+    } else {
+        return true;
+    }
 }
-}
-
 
 header('Content-Type: application/json');
 echo json_encode($returnValue);

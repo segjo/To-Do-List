@@ -21,9 +21,9 @@ class Profile {
 
 
         $salt = uniqid(mt_rand());
-
+        $date = date('Y-m-d H:i:s');
         $statement = $this->db->prepare("INSERT INTO User (UserId, Name, LastName, Email, EmailActivated, UserName, Image, EncryptedPassword, Salt, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, '2018-10-17', NULL));
+        $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, $date, NULL));
         if ($insert) {
             return array('Response' => 201, 'Content' => array('userId' => $this->getUserId($userName)));
         } else {
@@ -31,7 +31,7 @@ class Profile {
         }
     }
 
-    public function delete() {//TODO
+    public function delete($userId) {//TODO
         echo 'delete Profile';
     }
 
