@@ -36,7 +36,7 @@ class Profile {
     }
 
     public function login($userName, $password) {//TODO
-        $sql = "SELECT `UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' LIMIT 1";
+        $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' LIMIT 1";
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $result = $sth->fetchAll();
@@ -44,14 +44,20 @@ class Profile {
             foreach ($result as $row) {
                 $dbSalt = $row['Salt'];
                 $dbHashedPassword = $row['EncryptedPassword'];
+                $dbEmailActiavated = $row['EmailActivated'];
             }
             if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
-                $_SESSION['login'] = true;
-                return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
+
+                if ($dbEmailActiavated) {
+                    $_SESSION['login'] = true;
+                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
+                } else {
+                    return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
+                }
             } else {
                 return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
             }
-        }else{
+        } else {
             return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
         }
 
