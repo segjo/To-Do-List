@@ -1,16 +1,13 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['login'])) {
-    header('LOCATION:../tmpLogin.php');
-    die();
-}
+
 require_once('../../credentials.php');
 //require_once('models/Items.php');
-require_once('models/Profile.php');
+require_once('../models/Profile.php');
 //---------------KONSTANTEN-----------------
-define("URI_1", 3);
-define("URI_2", 4);
+define("URI_1", 3);  //profile, list, ..
+define("URI_2", 4);  //create, Login
 define("URI_REQ", $_SERVER[REQUEST_METHOD]);
 
 ini_set('display_errors', 'on');
@@ -21,8 +18,22 @@ ini_set('display_errors', 'on');
 //$profileModel= new Profile();
 
 
-$url =  $_SERVER['REQUEST_URI'];
+$url = $_SERVER['REQUEST_URI'];
+
 $values = parse_url($url);
+        $returnValue = array(
+            'profile create' => array(
+                'call' => 'POST',
+                'path' => '/profile/create/',
+                'param' => 'String userName, String firstName, String lastName, String email, String password',
+            ),
+            'profile login' => array(
+                'call' => 'POST',
+                'path' => '/profile/login/',
+                'param' => 'String userName, String password',
+            )
+        );
+        
 $urlPaths = $host = explode('/', $values['path']);
 
 try {
@@ -38,12 +49,20 @@ switch ($urlPaths[URI_1]) {
 
         $profileModel = new Profile($dbh);
         if ($urlPaths[URI_2] == 'create' && URI_REQ == 'POST') {
-            $returnValue = $profileModel->create();
+            if (isset($_POST["userName"]) && isset($_POST["firstName"]) && isset($_POST["lastName"]) && isset($_POST["email"]) && isset($_POST["password"])) {
+                $returnValue = $profileModel->create($_POST["userName"], $_POST["firstName"], $_POST["lastName"], $_POST["email"], $_POST["password"]);
+            } else {
+                $returnValue = array('Response' => 400);
+            }
         }
         if ($urlPaths[URI_2] == 'login' && URI_REQ == 'POST') {
-            $returnValue = $profileModel->login();
+            if (isset($_POST["userName"]) && isset($_POST["password"])) {
+                $returnValue = $profileModel->login($_POST["userName"], $_POST["password"]);
+            } else {
+                $returnValue = array('Response' => 400);
+            }
         }
-        if (URI_REQ == 'DELETE') {
+        if (URI_REQ == 'DELETE' && needLogin()) {
             $returnValue = $profileModel->delete();
         }
 
@@ -55,30 +74,21 @@ switch ($urlPaths[URI_1]) {
     case 'item':
         $this->update_user();
         break;
-    
-    default :
-        echo 'Funktionen:<br />';
-        echo 'POST /profile/create/ PARAM String userName, String firstName, String lastName, String email, String password <br />';
-        echo 'POST /profile/login/ PARAM String userName, String password<br />';
-        
-        break;
+
 }
 
-/*
-  switch($_SERVER['REQUEST_METHOD']){
-  case 'GET':
-  $this->get_user();
-  break;
-  case 'POST':
-  $this->add_user();
-  break;
-  case 'PUT':
-  $this->update_user();
-  break;
-  case 'DELETE':
-  $this->delete_user();
-  break;
-  } */
+function needLogin(){
+    if (!isset($_SESSION['login'])) {
+    header('LOCATION:../tmpLogin.php');
+    die();
+}
+}
+
+
+header('Content-Type: application/json');
+echo json_encode($returnValue);
+//header("HTTP/1.0 201 Resource created");
+
 
 
 $dbh = null;
