@@ -3,7 +3,6 @@
 session_start();
 
 require_once('../../credentials.php');
-//require_once('models/Items.php');
 require_once('../models/Profile.php');
 //---------------KONSTANTEN-----------------
 define("URI_1", 3);  //profile, list, ..
@@ -13,10 +12,6 @@ define("URI_REQ", $_SERVER[REQUEST_METHOD]);
 ini_set('display_errors', 'on');
 date_default_timezone_set("Europe/Zurich");
 
-
-
-//$itemModel= new Item();
-//$profileModel= new Profile();
 
 
 $url = $_SERVER['REQUEST_URI'];
@@ -35,7 +30,7 @@ $returnValue = array(
     )
 );
 if (isLoggedIn()) {
-    $returnValue = array(
+    $returnValue += array(
         'profile delete' => array(
             'call' => 'DELETE',
             'path' => '/api/profile/{userId}',
@@ -105,6 +100,8 @@ function isLoggedIn() {
 
 header('Content-Type: application/json');
 echo json_encode($returnValue);
+
+http_response_code($returnValue['Response']);
 //header("HTTP/1.0 201 Resource created");
 
 

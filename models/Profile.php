@@ -19,11 +19,11 @@ class Profile {
             return array('Response' => 409);
         }
 
-
-        $salt = uniqid(mt_rand());
         $date = date('Y-m-d H:i:s');
-        $statement = $this->db->prepare("INSERT INTO User (UserId, Name, LastName, Email, EmailActivated, UserName, Image, EncryptedPassword, Salt, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, $date, NULL));
+        $salt = uniqid(mt_rand());
+        $sql = "INSERT INTO User (UserId, Name, LastName, Email, EmailActivated, UserName, Image, EncryptedPassword, Salt, CreatedAt, UpdatedAt, DeletedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $statement = $this->db->prepare($sql);
+        $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, $date, NULL, NULL));
         if ($insert) {
             return array('Response' => 201, 'Content' => array('userId' => $this->getUserId($userName)));
         } else {
@@ -31,12 +31,9 @@ class Profile {
         }
     }
 
-    public function delete($userId) {//TODO
-        echo 'delete Profile';
-    }
-
     public function login($userName, $password) {//TODO
-        $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' LIMIT 1";
+        $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
+        //return $sql;
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $result = $sth->fetchAll();
@@ -50,6 +47,7 @@ class Profile {
 
                 if ($dbEmailActiavated) {
                     $_SESSION['login'] = true;
+                    $_SESSION['userId'] = $this->getUserId($userName);
                     return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
                 } else {
                     return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
@@ -61,8 +59,23 @@ class Profile {
             return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
         }
 
-        //if (hash_hmac("sha256", $_POST['password'], $saltFromDatabase) === $hashFromDatabase)
-        //$login = true;
+    }
+
+    public function delete($userId) {
+        if ($this->getOwnUserId() == $userId) {
+            $date = date('Y-m-d H:i:s');
+            $sql = "UPDATE User SET DeletedAt = '" . $date . "' WHERE User.UserId = " . $userId . "";
+            $statement = $this->db->prepare($sql);
+            $delete = $statement->execute();
+            if ($delete) {
+                session_destroy();
+                return array('Response' => 200, 'Content' => array('success' => true));
+            } else {
+                return array('Response' => 404, 'Content' => array('success' => false));
+            }
+        } else {
+            return array('Response' => 401, 'Content' => array('success' => false));
+        }
     }
 
     private function getUserId($userName) {
@@ -75,6 +88,14 @@ class Profile {
             foreach ($result as $row) {
                 return $row['UserId'];
             }
+        } else {
+            return false;
+        }
+    }
+
+    private function getOwnUserId() {
+        if (isset($_SESSION['userId'])) {
+            return $_SESSION['userId'];
         } else {
             return false;
         }
