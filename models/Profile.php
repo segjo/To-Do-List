@@ -3,9 +3,6 @@
 class Profile {
 
     private $db;
-    
-    
-    
 
     function __construct(PDO $dbh) {
         $this->db = $dbh;
@@ -19,7 +16,7 @@ class Profile {
         $count = $select->rowCount();
 
         if ($count > 0) {
-             return array('Response' => 409);
+            return array('Response' => 409);
         }
 
 
@@ -49,30 +46,32 @@ class Profile {
                 $dbHashedPassword = $row['EncryptedPassword'];
             }
             if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
-                $_SESSION['Login'] = true;
-            return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
-
+                $_SESSION['login'] = true;
+                return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
             } else {
-            return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
+                return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
             }
+        }else{
+            return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
         }
 
         //if (hash_hmac("sha256", $_POST['password'], $saltFromDatabase) === $hashFromDatabase)
         //$login = true;
     }
 
-    private function getUserId($userName){
+    private function getUserId($userName) {
         $sql = "SELECT UserId FROM User WHERE UserName = '" . $userName . "'";
 
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $result = $sth->fetchAll();
         if (count($result) > 0) {
-        foreach ($result as $row) {
-            return $row['UserId'];
-            
-        }}else{
+            foreach ($result as $row) {
+                return $row['UserId'];
+            }
+        } else {
             return false;
         }
     }
+
 }

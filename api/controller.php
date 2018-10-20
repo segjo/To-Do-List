@@ -79,8 +79,9 @@ switch ($urlPaths[URI_1]) {
 
 function needLogin(){
     if (!isset($_SESSION['login'])) {
-    header('LOCATION:../tmpLogin.php');
-    die();
+        return false;
+}else{
+    return true;
 }
 }
 
