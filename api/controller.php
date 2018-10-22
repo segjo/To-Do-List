@@ -4,6 +4,7 @@ session_start();
 
 require_once('../../credentials.php');
 require_once('../models/Profile.php');
+require_once('../utils/Mailer.php');
 //---------------KONSTANTEN-----------------
 define("URI_1", 3);  //profile, list, ..
 define("URI_2", 4);  //create, Login
@@ -11,6 +12,8 @@ define("URI_REQ", $_SERVER[REQUEST_METHOD]);
 
 ini_set('display_errors', 'on');
 date_default_timezone_set("Europe/Zurich");
+
+$mailer = new Mailer();
 
 
 
@@ -22,6 +25,11 @@ $returnValue = array(
         'call' => 'POST',
         'path' => '/api/profile/create/',
         'param' => 'String userName, String firstName, String lastName, String email, String password',
+    ),
+    'profile activate' => array(
+        'call' => 'GET',
+        'path' => '/api/profile/activate/',
+        'param' => 'String activateCode',
     ),
     'profile login' => array(
         'call' => 'POST',
@@ -55,7 +63,7 @@ switch ($urlPaths[URI_1]) {
         $profileModel = new Profile($dbh);
         if ($urlPaths[URI_2] == 'create' && URI_REQ == 'POST') {
             if (isset($_POST["userName"]) && isset($_POST["firstName"]) && isset($_POST["lastName"]) && isset($_POST["email"]) && isset($_POST["password"])) {
-                $returnValue = $profileModel->create($_POST["userName"], $_POST["firstName"], $_POST["lastName"], $_POST["email"], $_POST["password"]);
+                $returnValue = $profileModel->create($_POST["userName"], $_POST["firstName"], $_POST["lastName"], $_POST["email"], $_POST["password"], $mailer);
             } else {
                 $returnValue = array('Response' => 400);
             }
@@ -63,6 +71,13 @@ switch ($urlPaths[URI_1]) {
         if ($urlPaths[URI_2] == 'login' && URI_REQ == 'POST') {
             if (isset($_POST["userName"]) && isset($_POST["password"])) {
                 $returnValue = $profileModel->login($_POST["userName"], $_POST["password"]);
+            } else {
+                $returnValue = array('Response' => 400);
+            }
+        }
+        if ($urlPaths[URI_2] == 'activate' && URI_REQ == 'GET') {
+            if (isset($_GET["activateCode"])) {
+                $returnValue = $profileModel->activate($_GET["activateCode"]);
             } else {
                 $returnValue = array('Response' => 400);
             }
@@ -98,11 +113,12 @@ function isLoggedIn() {
     }
 }
 
+//echo var_dump(getallheaders()['Accept']);
+
 header('Content-Type: application/json');
 echo json_encode($returnValue);
 
 http_response_code($returnValue['Response']);
-//header("HTTP/1.0 201 Resource created");
 
 
 

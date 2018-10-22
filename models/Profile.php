@@ -8,7 +8,7 @@ class Profile {
         $this->db = $dbh;
     }
 
-    public function create($userName, $firstName, $lastName, $email, $password) {
+    public function create($userName, $firstName, $lastName, $email, $password, $mailer) {
         $sql = "SELECT * FROM User WHERE Email = '" . $email . "' OR UserName = '" . $userName . "'";
 
         $select = $this->db->prepare($sql);
@@ -21,17 +21,41 @@ class Profile {
 
         $date = date('Y-m-d H:i:s');
         $salt = uniqid(mt_rand());
-        $sql = "INSERT INTO User (UserId, Name, LastName, Email, EmailActivated, UserName, Image, EncryptedPassword, Salt, CreatedAt, UpdatedAt, DeletedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $actCode = uniqid(mt_rand());
+        $sql = "INSERT INTO User (UserId, Name, LastName, Email, ActivateCode, EmailActivated, UserName, Image, EncryptedPassword, Salt, CreatedAt, UpdatedAt, DeletedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $statement = $this->db->prepare($sql);
-        $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, $date, NULL, NULL));
+        $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, $actCode, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, $date, NULL, NULL));
         if ($insert) {
-            return array('Response' => 201, 'Content' => array('userId' => $this->getUserId($userName)));
+            $mailer->sendActivationMail($email, $userName, $actCode);
+            return array('Response' => 201, 'Content' => array('userId' => $this->getUserId($userName), 'activateCode' => $actCode));
         } else {
             return array('Response' => 422);
         }
     }
 
-    public function login($userName, $password) {//TODO
+    public function activate($code) {
+
+        $sql = "SELECT UserId FROM User WHERE ActivateCode = '" . $code . "'";
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $result = $sth->fetchAll();
+        if (count($result) > 0) {
+            $date = date('Y-m-d H:i:s');
+            $sql = "UPDATE User SET UpdatedAt = '" . $date . "', ActivateCode = NULL, EmailActivated = 1 WHERE User.UserId = " . $result[0]['UserId'] . "";
+            $statement = $this->db->prepare($sql);
+            $activate = $statement->execute();
+            if ($activate) {
+                session_destroy();
+                return array('Response' => 200, 'Content' => array('activation' => 'successful'));
+            } else {
+                return array('Response' => 422, 'Content' => array('activation' => 'not successful'));
+            }
+        } else {
+            return array('Response' => 422, 'Content' => array('activation' => 'not successful'));
+        }
+    }
+
+    public function login($userName, $password) {
         $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
         //return $sql;
         $sth = $this->db->prepare($sql);
@@ -50,7 +74,7 @@ class Profile {
                     $_SESSION['userId'] = $this->getUserId($userName);
                     return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
                 } else {
-                    return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
+                    return array('Response' => 424, 'Content' => array('userId' => $this->getUserId($userName)));
                 }
             } else {
                 return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
@@ -58,7 +82,6 @@ class Profile {
         } else {
             return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
         }
-
     }
 
     public function delete($userId) {
