@@ -1,16 +1,38 @@
 <?php
-
+require_once('../utils/FormValidator.php');
 class Profile {
 
     private $db;
+    private $validator;
 
     function __construct(PDO $dbh) {
         $this->db = $dbh;
     }
 
     public function create($userName, $firstName, $lastName, $email, $password, $mailer) {
-        $sql = "SELECT * FROM User WHERE Email = '" . $email . "' OR UserName = '" . $userName . "'";
 
+
+        if(!FormValidator::validateItem($userName, 'username')){
+            return array('Response' => 422, 'ValdidateError' => 'username');
+        }
+        if(!FormValidator::validateItem($firstName, 'name')){
+            return array('Response' => 422, 'ValdidateError' => 'firstname');
+        }
+        if(!FormValidator::validateItem($lastName, 'name')){
+            return array('Response' => 422, 'ValdidateError' => 'lastname');
+        }
+        if(!FormValidator::validateItem($email, 'email')){
+            return array('Response' => 422,'ValdidateError' => 'email');
+        }
+        if(!FormValidator::validateItem($password, 'password')){
+            return array('Response' => 422,'ValdidateError' => 'password');
+        }
+        
+        
+        
+        
+        $sql = "SELECT * FROM User WHERE (Email = '" . $email . "' OR UserName = '" . $userName . "') AND DeletedAt IS NULL";
+        
         $select = $this->db->prepare($sql);
         $select->execute();
         $count = $select->rowCount();
@@ -34,6 +56,7 @@ class Profile {
     }
 
     public function activate($code) {
+        
 
         $sql = "SELECT UserId FROM User WHERE ActivateCode = '" . $code . "'";
         $sth = $this->db->prepare($sql);
@@ -41,7 +64,7 @@ class Profile {
         $result = $sth->fetchAll();
         if (count($result) > 0) {
             $date = date('Y-m-d H:i:s');
-            $sql = "UPDATE User SET UpdatedAt = '" . $date . "', ActivateCode = NULL, EmailActivated = 1 WHERE User.UserId = " . $result[0]['UserId'] . "";
+            $sql = "UPDATE User SET UpdatedAt = '" . $date . "', ActivateCode = NULL, EmailActivated = 1 WHERE User.UserId = " . $result[0]['UserId'] . " AND DeletedAt IS NULL";
             $statement = $this->db->prepare($sql);
             $activate = $statement->execute();
             if ($activate) {
@@ -56,6 +79,13 @@ class Profile {
     }
 
     public function login($userName, $password) {
+        if(!FormValidator::validateItem($userName, 'username')){
+            return array('Response' => 401);
+        }
+        if(!FormValidator::validateItem($password, 'password')){
+            return array('Response' => 401);
+        }
+        
         $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
         //return $sql;
         $sth = $this->db->prepare($sql);
@@ -77,14 +107,18 @@ class Profile {
                     return array('Response' => 424, 'Content' => array('userId' => $this->getUserId($userName)));
                 }
             } else {
-                return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
+                return array('Response' => 401);
             }
         } else {
-            return array('Response' => 401, 'Content' => array('userId' => $this->getUserId($userName)));
+            return array('Response' => 401);
         }
     }
 
     public function delete($userId) {
+        if(!FormValidator::validateItem($userId, 'number')){
+            return array('Response' => 422, 'ValdidateError' => 'userId');
+        }
+        
         if ($this->getOwnUserId() == $userId) {
             $date = date('Y-m-d H:i:s');
             $sql = "UPDATE User SET DeletedAt = '" . $date . "' WHERE User.UserId = " . $userId . "";
@@ -102,7 +136,7 @@ class Profile {
     }
 
     private function getUserId($userName) {
-        $sql = "SELECT UserId FROM User WHERE UserName = '" . $userName . "'";
+        $sql = "SELECT UserId FROM User WHERE UserName = '" . $userName . "' AND DeletedAt IS NULL";
 
         $sth = $this->db->prepare($sql);
         $sth->execute();

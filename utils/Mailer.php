@@ -27,7 +27,7 @@ class Mailer {
         $this->mail->Subject = "Activate your To-Do-List Account";
         $this->mail->Body = 'Congratulations '.$userName.", you've just had an account created for you on To-Do-List with the email address ". $receiver. ".".
                 '<br /> To complete your registration, please visit this URL: '.
-                '<br /><a href="'.SERVER_URL.'/api/profile/activate/?activateCode='.$actCode .'">'.SERVER_URL.'/api/profile/activate/?code='.$actCode .'<a/>';
+                '<br /><a href="https://'.SERVER_URL.'/api/profile/activate/?activateCode='.$actCode .'">https://'.SERVER_URL.'/api/profile/activate/?code='.$actCode .'<a/>';
         
         //$this->mail->AltBody = "This is the body in plain text for non-HTML mail clients";
 
