@@ -1,5 +1,7 @@
 <?php
+
 require_once('../utils/FormValidator.php');
+
 class Profile {
 
     private $db;
@@ -12,27 +14,27 @@ class Profile {
     public function create($userName, $firstName, $lastName, $email, $password, $mailer) {
 
 
-        if(!FormValidator::validateItem($userName, 'username')){
+        if (!FormValidator::validateItem($userName, 'username')) {
             return array('Response' => 422, 'ValdidateError' => 'username');
         }
-        if(!FormValidator::validateItem($firstName, 'name')){
+        if (!FormValidator::validateItem($firstName, 'name')) {
             return array('Response' => 422, 'ValdidateError' => 'firstname');
         }
-        if(!FormValidator::validateItem($lastName, 'name')){
+        if (!FormValidator::validateItem($lastName, 'name')) {
             return array('Response' => 422, 'ValdidateError' => 'lastname');
         }
-        if(!FormValidator::validateItem($email, 'email')){
-            return array('Response' => 422,'ValdidateError' => 'email');
+        if (!FormValidator::validateItem($email, 'email')) {
+            return array('Response' => 422, 'ValdidateError' => 'email');
         }
-        if(!FormValidator::validateItem($password, 'password')){
-            return array('Response' => 422,'ValdidateError' => 'password');
+        if (!FormValidator::validateItem($password, 'password')) {
+            return array('Response' => 422, 'ValdidateError' => 'password');
         }
-        
-        
-        
-        
+
+
+
+
         $sql = "SELECT * FROM User WHERE (Email = '" . $email . "' OR UserName = '" . $userName . "') AND DeletedAt IS NULL";
-        
+
         $select = $this->db->prepare($sql);
         $select->execute();
         $count = $select->rowCount();
@@ -56,7 +58,7 @@ class Profile {
     }
 
     public function activate($code) {
-        
+
 
         $sql = "SELECT UserId FROM User WHERE ActivateCode = '" . $code . "'";
         $sth = $this->db->prepare($sql);
@@ -79,13 +81,13 @@ class Profile {
     }
 
     public function login($userName, $password) {
-        if(!FormValidator::validateItem($userName, 'username')){
+        if (!FormValidator::validateItem($userName, 'username')) {
             return array('Response' => 401);
         }
-        if(!FormValidator::validateItem($password, 'password')){
+        if (!FormValidator::validateItem($password, 'password')) {
             return array('Response' => 401);
         }
-        
+
         $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
         //return $sql;
         $sth = $this->db->prepare($sql);
@@ -114,25 +116,41 @@ class Profile {
         }
     }
 
-    public function delete($userId) {
-        if(!FormValidator::validateItem($userId, 'number')){
-            return array('Response' => 422, 'ValdidateError' => 'userId');
+    public function delete($password) {
+        if (!FormValidator::validateItem($password, 'password')) {
+            return array('Response' => 401);
         }
-        
-        if ($this->getOwnUserId() == $userId) {
-            $date = date('Y-m-d H:i:s');
-            $sql = "UPDATE User SET DeletedAt = '" . $date . "' WHERE User.UserId = " . $userId . "";
-            $statement = $this->db->prepare($sql);
-            $delete = $statement->execute();
-            if ($delete) {
-                session_destroy();
-                return array('Response' => 200, 'Content' => array('success' => true));
+        $userId=$this->getOwnUserId();
+        $userName = $this->getUserName($userId);
+        $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
+        //return $sql;
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $result = $sth->fetchAll();
+        if (count($result) > 0) {
+            foreach ($result as $row) {
+                $dbSalt = $row['Salt'];
+                $dbHashedPassword = $row['EncryptedPassword'];
+                $dbEmailActiavated = $row['EmailActivated'];
+            }
+            if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
+                $date = date('Y-m-d H:i:s');
+                $sql = "UPDATE User SET DeletedAt = '" . $date . "' WHERE User.UserId = " . $userId . "";
+                $statement = $this->db->prepare($sql);
+                $delete = $statement->execute();
+                if ($delete) {
+                    session_destroy();
+                    return array('Response' => 200, 'Content' => array('success' => true));
+                } else {
+                    return array('Response' => 404, 'Content' => array('success' => false));
+                }
             } else {
-                return array('Response' => 404, 'Content' => array('success' => false));
+                return array('Response' => 401);
             }
         } else {
-            return array('Response' => 401, 'Content' => array('success' => false));
+            return array('Response' => 401);
         }
+
     }
 
     private function getUserId($userName) {
@@ -153,6 +171,21 @@ class Profile {
     private function getOwnUserId() {
         if (isset($_SESSION['userId'])) {
             return $_SESSION['userId'];
+        } else {
+            return false;
+        }
+    }
+
+    private function getUserName($userId) {
+        $sql = "SELECT UserName FROM User WHERE UserId = '" . $userId . "' AND DeletedAt IS NULL";
+
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $result = $sth->fetchAll();
+        if (count($result) > 0) {
+            foreach ($result as $row) {
+                return $row['UserName'];
+            }
         } else {
             return false;
         }

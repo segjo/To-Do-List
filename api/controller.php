@@ -40,9 +40,9 @@ $returnValue = array(
 if (isLoggedIn()) {
     $returnValue += array(
         'profile delete' => array(
-            'call' => 'DELETE',
-            'path' => '/api/profile/{userId}',
-            'param' => '',
+            'call' => 'POST',
+            'path' => '/api/profile/delete',
+            'param' => 'String password',
         ),
     );
 }
@@ -82,11 +82,11 @@ switch ($urlPaths[URI_1]) {
                 $returnValue = array('Response' => 400);
             }
         }
-        if (URI_REQ == 'DELETE') {
+        if ($urlPaths[URI_2] == 'delete' && URI_REQ == 'POST') {
             if (isLoggedIn()) {
-                if (isset($urlPaths[URI_2])) {
-                    $userId = $urlPaths[URI_2];
-                    $returnValue = $profileModel->delete($userId);
+                if (isset($_POST["password"])) {
+                    $password = $_POST["password"];
+                    $returnValue = $profileModel->delete($password);
                 } else {
                     $returnValue = array('Response' => 400);
                 }
