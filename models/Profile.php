@@ -58,7 +58,9 @@ class Profile {
     }
 
     public function activate($code) {
-
+        if (!FormValidator::validateItem($code, 'activatecode')) {
+            return array('Response' => 422, 'ValdidateError' => 'activatecode');
+        }
 
         $sql = "SELECT UserId FROM User WHERE ActivateCode = '" . $code . "'";
         $sth = $this->db->prepare($sql);
@@ -101,7 +103,7 @@ class Profile {
             }
             if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
 
-                if ($dbEmailActiavated) {
+                if ($dbEmailActiavated==1) {
                     $_SESSION['login'] = true;
                     $_SESSION['userId'] = $this->getUserId($userName);
                     return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
@@ -151,6 +153,26 @@ class Profile {
             return array('Response' => 401);
         }
 
+    }
+    
+    public function getLists() {
+        
+        $userId=$this->getOwnUserId();
+        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner = 1 AND User.UserId = ".$userId." ORDER BY `List`.`SortIndex` DESC, `List`.`ListId` DESC";
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $lists = $sth->fetchAll();
+        return array('Response' => 200, 'lists' => $lists);
+    }
+    
+    public function getSharedLists() {
+        
+        $userId=$this->getOwnUserId();
+        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.ShareActivated = 1 AND User.UserId = ".$userId." ORDER BY `List`.`ListId` DESC";
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $lists = $sth->fetchAll();
+        return array('Response' => 200, 'lists' => $lists);
     }
 
     private function getUserId($userName) {

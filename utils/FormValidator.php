@@ -19,6 +19,7 @@ class FormValidator
 {
     public static $regexes = Array(
             'date' => "^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}\$",
+            'datetime' => "^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}.[0-9]{1,2}[:][0-9]{1,2}[:][0-9]{1,2}\$", //2018-10-22 23:18:42
             'amount' => "^[-]?[0-9]+\$",
             'number' => "^[-]?[0-9,]+\$",
             'alfanum' => "^[0-9a-zA-Z ,.-_\\s\?\!]+\$",
@@ -31,9 +32,12 @@ class FormValidator
             '2digitopt' => "^\d+(\,\d{2})?\$",
             '2digitforce' => "^\d+\,\d\d\$",
             'anything' => "^[\d\D]{1,}\$",
-            'username' => "^[0-9a-zA-Z ,.-_\\s\?\!]{5,15}\$",
+            'username' => "^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{5,15}\$",
             'name' => "^.{1,50}$",
-            'password' => "^.{8,50}$"
+            'password' => "^.{8,50}$",
+            'listname' => "^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,15}\$",
+            'itemname' => "^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{0,200}\$",
+            'activatecode' => "^[a-zA-Z0-9]{10,100}\$",
     );
     private $validations, $sanatations, $mandatories, $errors, $corrects, $fields;
 

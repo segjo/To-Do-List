@@ -27,7 +27,30 @@ class Mailer {
         $this->mail->Subject = "Activate your To-Do-List Account";
         $this->mail->Body = 'Congratulations '.$userName.", you've just had an account created for you on To-Do-List with the email address ". $receiver. ".".
                 '<br /> To complete your registration, please visit this URL: '.
-                '<br /><a href="https://'.SERVER_URL.'/api/profile/activate/?activateCode='.$actCode .'">https://'.SERVER_URL.'/api/profile/activate/?code='.$actCode .'<a/>';
+                '<br /><a href="https://'.SERVER_URL.'/api/profile/activate/?activateCode='.$actCode .'">https://'.SERVER_URL.'/api/profile/activate/?activateCode='.$actCode .'<a/>';
+        
+        //$this->mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+
+        if (!$this->mail->Send()) {
+            syslog(LOG_ERROR, 'Message could not be sent. Mailer Error: ' . $this->mail->ErrorInfo);
+            exit;
+        }
+
+        echo 'Message has been sent';
+        syslog(LOG_NOTICE, 'Message has been sent: ' . $receiver);
+    }
+    
+    public function sendListShare($receiver, $userName, $senderUserName ,$shareCode) {
+        $this->mail->FromName = "To-Do-List Mailer";
+        $this->mail->AddAddress($receiver, $userName);
+
+        $this->mail->WordWrap = 50;                                 // set word wrap to 50 characters
+        $this->mail->IsHTML(true);                                  // set email format to HTML
+
+        $this->mail->Subject = "Invitation to share a To-Do-List";
+        $this->mail->Body = 'Hi '.$userName.", you've just get a invitation for a To-Do-List from ".$senderUserName.".".
+                '<br /> To accept, please visit this URL: '.
+                '<br /><a href="https://'.SERVER_URL.'/api/todolist/activate/?activateCode='.$shareCode .'">https://'.SERVER_URL.'/api/todolist/activate/?activateCode='.$shareCode .'<a/>';
         
         //$this->mail->AltBody = "This is the body in plain text for non-HTML mail clients";
 
