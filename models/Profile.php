@@ -68,7 +68,7 @@ class Profile {
         $result = $sth->fetchAll();
         if (count($result) > 0) {
             $date = date('Y-m-d H:i:s');
-            $sql = "UPDATE User SET UpdatedAt = '" . $date . "', ActivateCode = NULL, EmailActivated = 1 WHERE User.UserId = " . $result[0]['UserId'] . " AND DeletedAt IS NULL";
+            $sql = "UPDATE User SET UpdatedAt = '" . $date . "', EmailActivated = 1 WHERE User.UserId = " . $result[0]['UserId'] . " AND DeletedAt IS NULL";
             $statement = $this->db->prepare($sql);
             $activate = $statement->execute();
             if ($activate) {
