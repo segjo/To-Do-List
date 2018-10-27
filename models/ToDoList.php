@@ -57,7 +57,7 @@ class ToDoList {
         if (!FormValidator::validateItem($userName, 'username')) {
             return array('Response' => 422);
         }
-        if ($this->checkListPermission($listId)) {
+        if ($this->checkListPermission($listId,true)) {
             $sql = "SELECT UserId, Email FROM User WHERE UserName = '" . $userName . "' AND DeletedAt IS NULL";
             $sth = $this->db->prepare($sql);
             $sth->execute();
