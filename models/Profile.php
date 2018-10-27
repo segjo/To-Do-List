@@ -51,7 +51,7 @@ class Profile {
         $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, $actCode, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, $date, NULL, NULL));
         if ($insert) {
             $mailer->sendActivationMail($email, $userName, $actCode);
-            return array('Response' => 201, 'Content' => array('userId' => $this->getUserId($userName), 'activateCode' => $actCode));
+            return array('Response' => 201, 'Content' => array('userId' => $this->getUserId($userName)));
         } else {
             return array('Response' => 422);
         }
