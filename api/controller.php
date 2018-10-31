@@ -13,7 +13,7 @@ define("URI_1", 3);  //profile, list, ..
 define("URI_2", 4);  //create, Login
 define("URI_3", 5);  //items
 define("URI_4", 6);  //items functions
-define("URI_REQ", $_SERVER[REQUEST_METHOD]);
+define("URI_REQ", $_SERVER['REQUEST_METHOD']);
 
 ini_set('display_errors', 'on');
 date_default_timezone_set("Europe/Zurich");

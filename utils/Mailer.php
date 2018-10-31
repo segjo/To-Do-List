@@ -36,7 +36,6 @@ class Mailer {
             exit;
         }
 
-        echo 'Message has been sent';
         syslog(LOG_NOTICE, 'Message has been sent: ' . $receiver);
     }
     
@@ -59,7 +58,6 @@ class Mailer {
             exit;
         }
 
-        echo 'Message has been sent';
         syslog(LOG_NOTICE, 'Message has been sent: ' . $receiver);
     }
 
