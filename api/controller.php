@@ -25,7 +25,7 @@ $mailer = new Mailer();
 $url = $_SERVER['REQUEST_URI'];
 
 $values = parse_url($url);
-
+$returnValue = array('Response' => 400);
 $urlPaths = $host = explode('/', $values['path']);
 
 try {
