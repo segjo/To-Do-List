@@ -107,7 +107,7 @@ class Profile {
                 if ($dbEmailActiavated==1) {
                     $_SESSION['login'] = true;
                     $_SESSION['userId'] = $this->getUserId($userName);
-                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userLocation' => $this->getUserIP()));
+                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userLocation' => $this->getUserLocation($this->getUserIP(), IPSTACK_ACCESSKEY)));
                 } else {
                     return array('Response' => 424, 'Content' => array('userId' => $this->getUserId($userName)));
                 }
@@ -229,8 +229,15 @@ class Profile {
 }
 
     private function getUserLocation($ip, $access_key){
-        $response = curl_init('https://api.ipstack.com/'.$ip.'?access_key='.$access_key.', output=json');
-        return $response;
+        $request='http://api.ipstack.com/'.$ip.'?access_key='.$access_key;
+        
+        $ch = curl_init($request);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($ch);
+        curl_close($ch);
+        $api_result = json_decode($json, true);
+        return $api_result['location']['capital'];;
     }
 
 }
