@@ -1,6 +1,7 @@
 <?php
 
 require_once('../utils/FormValidator.php');
+require_once('../../credentials.php');
 
 class Profile {
 
@@ -106,7 +107,7 @@ class Profile {
                 if ($dbEmailActiavated==1) {
                     $_SESSION['login'] = true;
                     $_SESSION['userId'] = $this->getUserId($userName);
-                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userIP' => $this->getUserIP()));
+                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userLocation' => $this->getUserLocation(getUserIP(), IPSTACK_ACCESSKEY)));
                 } else {
                     return array('Response' => 424, 'Content' => array('userId' => $this->getUserId($userName)));
                 }
@@ -226,5 +227,10 @@ class Profile {
         return $_SERVER['REMOTE_ADDR'];
     }
 }
+
+    private function getUserLocation($ip, $access_key){
+        $response = curl_init('https://api.ipstack.com/'.$ip.'?access_key='.$access_key.', output=json');
+        return $response;
+    }
 
 }
