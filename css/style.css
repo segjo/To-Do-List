@@ -1,0 +1,9 @@
+.icon_small {
+    width: 35px;
+    height: 35px;
+    padding: 2px;
+}
+
+.todo_list_title {
+    font-size: 18pt;
+}
