@@ -44,21 +44,21 @@ switch ($urlPaths[URI_1]) {
             if (isset($_POST["userName"]) && isset($_POST["firstName"]) && isset($_POST["lastName"]) && isset($_POST["email"]) && isset($_POST["password"])) {
                 $returnValue = $profileModel->create($_POST["userName"], $_POST["firstName"], $_POST["lastName"], $_POST["email"], $_POST["password"], $mailer);
             } else {
-                $returnValue = array('Response' => 400);
+                $returnValue = array('Response' => 400, 'Method' => "Profile create");
             }
         }
         if ($urlPaths[URI_2] == 'login' && URI_REQ == 'POST') {
             if (isset($_POST["userName"]) && isset($_POST["password"])) {
                 $returnValue = $profileModel->login($_POST["userName"], $_POST["password"]);
             } else {
-                $returnValue = array('Response' => 400);
+                $returnValue = array('Response' => 400, 'Method' => "Profile Login");
             }
         }
         if ($urlPaths[URI_2] == 'activate' && URI_REQ == 'GET') {
             if (isset($_GET["activateCode"])) {
                 $returnValue = $profileModel->activate($_GET["activateCode"]);
             } else {
-                $returnValue = array('Response' => 400);
+                $returnValue = array('Response' => 400, 'Method' => "Profile activate");
             }
         }
         if ($urlPaths[URI_2] == 'delete' && URI_REQ == 'POST') {
@@ -67,7 +67,7 @@ switch ($urlPaths[URI_1]) {
                     $password = $_POST["password"];
                     $returnValue = $profileModel->delete($password);
                 } else {
-                    $returnValue = array('Response' => 400);
+                    $returnValue = array('Response' => 400, 'Method' => "Profile delete");
                 }
             } else {
                 $returnValue = array('Response' => 401);
@@ -102,7 +102,7 @@ switch ($urlPaths[URI_1]) {
                 if (isset($_POST["listName"])) {
                     $returnValue = $listModel->create($_POST["listName"]);
                 } else {
-                    $returnValue = array('Response' => 400);
+                    $returnValue = array('Response' => 400, 'Method' => "Todolist create");
                 }
             }
             if ($urlPaths[URI_3] == 'delete' && URI_REQ == 'POST') {
@@ -110,7 +110,7 @@ switch ($urlPaths[URI_1]) {
                     $listId = $urlPaths[URI_2];
                     $returnValue = $listModel->delete($listId);
                 } else {
-                    $returnValue = array('Response' => 400);
+                    $returnValue = array('Response' => 400, 'Method' => "Todolist delete");
                 }
             }
 
@@ -119,7 +119,7 @@ switch ($urlPaths[URI_1]) {
                     $listId = $urlPaths[URI_2];
                     $returnValue = $listModel->getListItems($listId);
                 } else {
-                    $returnValue = array('Response' => 400);
+                    $returnValue = array('Response' => 400, 'Method' => "Todolist get Items");
                 }
             }
 
@@ -129,7 +129,7 @@ switch ($urlPaths[URI_1]) {
                     $userName = $_POST["userName"];
                     $returnValue = $listModel->share($listId, $userName, $mailer);
                 } else {
-                    $returnValue = array('Response' => 400);
+                    $returnValue = array('Response' => 400, 'Method' => "Todolist share");
                 }
             }
 
@@ -145,7 +145,7 @@ switch ($urlPaths[URI_1]) {
                         $itemName = $_POST["itemName"];
                         $returnValue = $listItemModel->add($listId, $itemName);
                     } else {
-                        $returnValue = array('Response' => 400);
+                        $returnValue = array('Response' => 400, 'Method' => "Item add");
                     }
                 }
                 if ($urlPaths[URI_4] != 'add' && $urlPaths[URI_4] != 'delete' && URI_REQ == 'POST') {
@@ -157,7 +157,7 @@ switch ($urlPaths[URI_1]) {
                         $sortIndex = $_POST["sortIndex"];
                         $returnValue = $listItemModel->edit($listId, $itemId, $itemName, $deadline, $sortIndex);
                     } else {
-                        $returnValue = array('Response' => 400);
+                        $returnValue = array('Response' => 400, 'Method' => "Item edit");
                     }
                 }
                 if ($urlPaths[URI_4] == 'delete' && URI_REQ == 'POST') {
@@ -166,7 +166,7 @@ switch ($urlPaths[URI_1]) {
                         $itemId = $_POST["itemId"];
                         $returnValue = $listItemModel->delete($listId, $itemId);
                     } else {
-                        $returnValue = array('Response' => 400);
+                        $returnValue = array('Response' => 400, 'Method' => "Item delete");
                     }
                 }
             }
@@ -177,7 +177,7 @@ switch ($urlPaths[URI_1]) {
                     $shareCode = $_GET["activateCode"];
                     $returnValue = $listModel->activate($shareCode);
                 } else {
-                    $returnValue = array('Response' => 400);
+                    $returnValue = array('Response' => 400, 'Method' => "Todolist activate");
                 }
             } else {
                 $returnValue = array('Response' => 401);

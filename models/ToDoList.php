@@ -57,7 +57,7 @@ class ToDoList {
         if (!FormValidator::validateItem($userName, 'username')) {
             return array('Response' => 422);
         }
-        if ($this->checkListPermission($listId,true)) {
+        if ($this->checkListPermission($listId, true)) {
             $sql = "SELECT UserId, Email FROM User WHERE UserName = '" . $userName . "' AND DeletedAt IS NULL";
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -133,9 +133,15 @@ class ToDoList {
         }
     }
 
-    public function getListItems($listId) {
+    public function getListItems($listId, $lastCall=null) {
         if (!FormValidator::validateItem($listId, 'number')) {
             return array('Response' => 422);
+        }
+        
+        if($lastCall!=null){
+            if(!$this->isUpdated($listId, $lastCall)){
+                return array('Response' => 304);
+            }
         }
 
         $userId = $this->getOwnUserId();
@@ -150,12 +156,12 @@ class ToDoList {
 
 
         $userId = $this->getOwnUserId();
-        if($ownerOnly){
-        $sql = "SELECT List.ListId FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner=1 AND User.UserId = " . $userId . " AND List.ListId = " . $listId;
-        }else{
-                  $sql = "SELECT List.ListId FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND (User2List.Owner=1 OR User2List.ShareActivated=1) AND User.UserId = " . $userId . " AND List.ListId = " . $listId;  
+        if ($ownerOnly) {
+            $sql = "SELECT List.ListId FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner=1 AND User.UserId = " . $userId . " AND List.ListId = " . $listId;
+        } else {
+            $sql = "SELECT List.ListId FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND (User2List.Owner=1 OR User2List.ShareActivated=1) AND User.UserId = " . $userId . " AND List.ListId = " . $listId;
         }
-        
+
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $lists = $sth->fetchAll();
@@ -186,6 +192,32 @@ class ToDoList {
             }
         } else {
             return false;
+        }
+    }
+
+    private function isUpdated($listId, $lastCall) {
+        if (!FormValidator::validateItem($listId, 'number')) {
+            return array('Response' => 422);
+        }
+        if (!FormValidator::validateItem($lastCall, 'datetime')) {
+            return array('Response' => 422);
+        }
+
+        if ($this->checkListPermission($listId, false)) {
+            $sql = "SELECT * FROM `List` LEFT JOIN Item ON Item.ListId=List.ListId " .
+                    "WHERE List.ListId = ".$listId." AND (Item.UpdatedAt > '" . $lastCall . "' " .
+                    "OR Item.CreatedAt > '" . $lastCall . "' " .
+                    "OR Item.DeletedAt > '" . $lastCall . "' " .
+                    "OR List.DeletedAt > '" . $lastCall . "' " .
+                    "OR List.UpdatedAt > '" . $lastCall . "')";
+            $sth = $this->db->prepare($sql);
+            $sth->execute();
+            $result = $sth->fetchAll();
+            if (count($result) > 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
