@@ -1,33 +1,32 @@
+function addTodoListItem(listId, itemDescription) {
+    document.getElementById("todo_list_entry_list").innerHTML += getTodoListEntryItem(listId, itemDescription);
+    addEventListenerForAddNewListEntryInputBox(listId);
+}
+
 function fillTodoListList(todoListContainerId, todoListEntryContainerId) {
 
     var listListItems = '<div class="list-group">';
+    listListItems += '<div class="list-group-item"><button class="btn todo_list_create_new_list w-100" id="todo_list_create_new_list">Liste erstellen</button></div>';
+    listListItems += '<div>';
 
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 4; i++) {
         listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, i, "List " + i); // TODO: Get data from API
     }
 
     listListItems += '</div>';
 
-    var element = document.getElementById(todoListContainerId).innerHTML = listListItems;
-
+    document.getElementById(todoListContainerId).innerHTML = listListItems;
 }
 
 function fillTodoListEntries(listId, todoListEntryContainerId) {
     var listItems = '';
     var i = 0;
 
-    for (i = 0; i < 10; i++) {
-        var title = "Entry " + ((i + 1) * (listId + 1));
-        listItems += '<div id="listId_' + listId + '" class="list-group-item">';
-        listItems += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
-        listItems += '<div class="d-flex w-100 justify-content-between">';
-        listItems += '  <h5 class="mb-1">' + title + '</h5>';
-        listItems += '  <small>blabla</small>';
-        listItems += '</div>';
-        listItems += '<p class="mb-1"></p>';
-        listItems += '<small>blah</small>';
-        listItems += '</a>';
-        listItems += '</div>';
+    listItems += '<div class="list-group" id="todo_list_entry_list">';
+    listItems += '<div class="list-group-item"><input class="form-control todo_list_entry_add" type="text"/></div>';
+
+    for (i = 0; i < 3; i++) {
+        listItems += getTodoListEntryItem(listId);
     }
 
     var todoLists = document.getElementsByClassName("todo_list");
@@ -39,7 +38,22 @@ function fillTodoListEntries(listId, todoListEntryContainerId) {
     var selectedTodoList = document.getElementById("listId_" + listId);
     selectedTodoList.classList.add("active");
 
-    document.getElementById(todoListEntryContainerId).innerHTML = listItems;
+    listItems += "</div>";
+
+    var todoListEntryContainer = document.getElementById(todoListEntryContainerId);
+    todoListEntryContainer.innerHTML = listItems;
+
+    addEventListenerForAddNewListEntryInputBox(listId);
+}
+
+function addEventListenerForAddNewListEntryInputBox(listId) {
+    document.querySelector(".todo_list_entry_add").addEventListener("keyup", function(event) {
+        if (event.key !== "Enter") {
+            return;
+        }
+        addTodoListItem(listId, event.srcElement.value);
+        event.srcElement.value = "";
+    });
 }
 
 function getTodoListListItem(todoListContainerId, todoListEntryContainerId, listId, title) {
@@ -47,6 +61,24 @@ function getTodoListListItem(todoListContainerId, todoListEntryContainerId, list
     var listItem = '';
 
     listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:fillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListContainerId + '\');">';
+    listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
+    listItem += '<div class="d-flex w-100 justify-content-between">';
+    listItem += '  <h5 class="mb-1">' + title + '</h5>';
+    listItem += '  <small>blabla</small>';
+    listItem += '</div>';
+    listItem += '<p class="mb-1"></p>';
+    listItem += '<small>blah</small>';
+    listItem += '</a>';
+    listItem += '</div>';
+
+    return listItem;
+}
+
+function getTodoListEntryItem(listId, itemDescription) {
+    var listItem = '';
+
+    var title = itemDescription || ("Entry " + (Math.floor(Math.random() * 1000)));
+    listItem += '<div id="listId_' + listId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
