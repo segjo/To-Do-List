@@ -116,7 +116,12 @@ switch ($urlPaths[URI_1]) {
             if ($urlPaths[URI_3] == 'items' && !isset($urlPaths[URI_4]) && URI_REQ == 'GET') {
                 if (isset($urlPaths[URI_2])) {
                     $listId = $urlPaths[URI_2];
-                    $returnValue = $listModel->getListItems($listId);
+                    if (isset($_GET["lastCall"])) {
+                        $lastCall = $_GET["lastCall"];
+                    }else{
+                        $lastCall = null;
+                    }      
+                    $returnValue = $listModel->getListItems($listId, $lastCall);
                 } else {
                     $returnValue = array('Response' => 400, 'Method' => "Todolist get Items");
                 }
