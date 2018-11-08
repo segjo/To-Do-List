@@ -133,16 +133,20 @@ class ToDoList {
         }
     }
 
-    public function getListItems($listId, $lastCall=null) {
+    public function getListItems($listId, $lastCall = null) {
         if (!FormValidator::validateItem($listId, 'number')) {
             return array('Response' => 422);
         }
-        
-        if($lastCall!=null){
-            if(!$this->isUpdated($listId, $lastCall)){
-                return array('Response' => 304);
+        if ($lastCall != null) {
+            if (FormValidator::validateItem($lastCall, 'datetime') || FormValidator::validateItem($lastCall, 'date')) {
+                if (!$this->isUpdated($listId, $lastCall)) {
+                    return array('Response' => 304);
+                }
+            } else {
+                return array('Response' => 422);
             }
         }
+
 
         $userId = $this->getOwnUserId();
         $sql = "SELECT Item.ItemId, Item.SortIndex, Item.Name, Item.Deadline FROM List, User2List, User, Item WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND Item.ListId = List.ListId AND (User2List.Owner=1 OR User2List.ShareActivated=1) AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND Item.DeletedAt is NULL AND User.UserId = " . $userId . " AND List.ListId = " . $listId . " ORDER BY Item.SortIndex DESC, Item.ItemId ASC";
@@ -196,16 +200,9 @@ class ToDoList {
     }
 
     private function isUpdated($listId, $lastCall) {
-        if (!FormValidator::validateItem($listId, 'number')) {
-            return array('Response' => 422);
-        }
-        if (!FormValidator::validateItem($lastCall, 'datetime')) {
-            return array('Response' => 422);
-        }
-
         if ($this->checkListPermission($listId, false)) {
             $sql = "SELECT * FROM `List` LEFT JOIN Item ON Item.ListId=List.ListId " .
-                    "WHERE List.ListId = ".$listId." AND (Item.UpdatedAt > '" . $lastCall . "' " .
+                    "WHERE List.ListId = " . $listId . " AND (Item.UpdatedAt > '" . $lastCall . "' " .
                     "OR Item.CreatedAt > '" . $lastCall . "' " .
                     "OR Item.DeletedAt > '" . $lastCall . "' " .
                     "OR List.DeletedAt > '" . $lastCall . "' " .
