@@ -3,14 +3,17 @@ function addTodoListItem(listId, itemDescription) {
     addEventListenerForAddNewListEntryInputBox(listId);
 }
 
-function fillTodoListList(todoListContainerId, todoListEntryContainerId) {
+function fillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
 
-    var listListItems = '<div class="list-group">';
-    listListItems += '<div class="list-group-item"><button class="btn todo_list_create_new_list w-100" id="todo_list_create_new_list">Liste erstellen</button></div>';
+    var listListItems = '<div class="list-group" id="todo_list_list">';
+    listListItems += '<div class="list-group-item">';
+    listListItems += '<button class="btn todo_list_create_new_list w-100" id="todo_list_create_new_list" data-toggle="modal" data-target="#modal_create_list">Liste erstellen</button>';
+    listListItems += '</div>';
+
     listListItems += '<div>';
 
-    for (var i = 0; i < 4; i++) {
-        listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, i, "List " + i); // TODO: Get data from API
+    for (var i = 0; i < 2; i++) {
+        listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, i, "List " + i); // TODO: Get data from API
     }
 
     listListItems += '</div>';
@@ -18,7 +21,7 @@ function fillTodoListList(todoListContainerId, todoListEntryContainerId) {
     document.getElementById(todoListContainerId).innerHTML = listListItems;
 }
 
-function fillTodoListEntries(listId, todoListEntryContainerId) {
+function fillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId) {
     var listItems = '';
     var i = 0;
 
@@ -43,6 +46,9 @@ function fillTodoListEntries(listId, todoListEntryContainerId) {
     var todoListEntryContainer = document.getElementById(todoListEntryContainerId);
     todoListEntryContainer.innerHTML = listItems;
 
+    var todoListTitle = document.getElementById(todoListTitleId);
+    todoListTitle.innerHTML = "TITLE";
+
     addEventListenerForAddNewListEntryInputBox(listId);
 }
 
@@ -56,11 +62,11 @@ function addEventListenerForAddNewListEntryInputBox(listId) {
     });
 }
 
-function getTodoListListItem(todoListContainerId, todoListEntryContainerId, listId, title) {
+function getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, listId, title) {
 
     var listItem = '';
 
-    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:fillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListContainerId + '\');">';
+    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:fillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\');">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
@@ -82,7 +88,7 @@ function getTodoListEntryItem(listId, itemDescription) {
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
-    listItem += '  <small>blabla</small>';
+    listItem += '  <small><img class="icon_small float-right" src="img/icon_calendar.png"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
     listItem += '<small>blah</small>';
@@ -90,4 +96,9 @@ function getTodoListEntryItem(listId, itemDescription) {
     listItem += '</div>';
 
     return listItem;
+}
+
+function createList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
+    var listName = document.getElementById("txt_create_list").value;
+    document.getElementById("todo_list_list").innerHTML += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, 89, listName);
 }
