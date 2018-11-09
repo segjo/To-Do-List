@@ -209,7 +209,8 @@ function isLoggedIn() {
     }
 }
 
-//echo var_dump(getallheaders()['Accept']);
+//echo var_dump($returnValue);
+
 
 header('Content-Type: application/json');
 echo json_encode($returnValue);

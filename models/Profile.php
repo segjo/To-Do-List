@@ -162,7 +162,8 @@ class Profile {
         $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner = 1 AND User.UserId = ".$userId." ORDER BY `List`.`SortIndex` DESC, `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
-        $lists = $sth->fetchAll();
+        $lists = $sth->fetch(PDO::FETCH_OBJ);
+        //echo var_dump($lists);
         return array('Response' => 200, 'lists' => $lists);
     }
     
@@ -172,7 +173,10 @@ class Profile {
         $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.ShareActivated = 1 AND User.UserId = ".$userId." ORDER BY `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
-        $lists = $sth->fetchAll();
+        $lists = $sth->fetchAll(FETCH_OBJ);
+        if($lists==false){
+            $lists=null;
+        }
         return array('Response' => 200, 'lists' => $lists);
     }
 
