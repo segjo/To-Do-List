@@ -1,6 +1,7 @@
 <?php
 
 require_once('../utils/FormValidator.php');
+require_once('../../credentials.php');
 
 class Profile {
 
@@ -106,7 +107,7 @@ class Profile {
                 if ($dbEmailActiavated==1) {
                     $_SESSION['login'] = true;
                     $_SESSION['userId'] = $this->getUserId($userName);
-                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName)));
+                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userLocation' => $this->getUserLocation($this->getUserIP(), IPSTACK_ACCESSKEY)));
                 } else {
                     return array('Response' => 424, 'Content' => array('userId' => $this->getUserId($userName)));
                 }
@@ -161,7 +162,8 @@ class Profile {
         $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner = 1 AND User.UserId = ".$userId." ORDER BY `List`.`SortIndex` DESC, `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
-        $lists = $sth->fetchAll();
+        $lists = $sth->fetch(PDO::FETCH_OBJ);
+        //echo var_dump($lists);
         return array('Response' => 200, 'lists' => $lists);
     }
     
@@ -171,7 +173,10 @@ class Profile {
         $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.ShareActivated = 1 AND User.UserId = ".$userId." ORDER BY `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
-        $lists = $sth->fetchAll();
+        $lists = $sth->fetchAll(FETCH_OBJ);
+        if($lists==false){
+            $lists=null;
+        }
         return array('Response' => 200, 'lists' => $lists);
     }
 
@@ -211,6 +216,32 @@ class Profile {
         } else {
             return false;
         }
+    }
+    
+    private function getUserIP() {
+    if( array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && !empty($_SERVER['HTTP_X_FORWARDED_FOR']) ) {
+        if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',')>0) {
+            $addr = explode(",",$_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($addr[0]);
+        } else {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+    }
+    else {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+}
+
+    private function getUserLocation($ip, $access_key){
+        $request='http://api.ipstack.com/'.$ip.'?access_key='.$access_key;
+        
+        $ch = curl_init($request);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($ch);
+        curl_close($ch);
+        $api_result = json_decode($json, true);
+        return $api_result['location']['capital'];;
     }
 
 }

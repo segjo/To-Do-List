@@ -49,7 +49,7 @@ if (isLoggedIn()) {
             'list items' => array(
                 'call' => 'GET',
                 'path' => '/api/todolist/{listId}/items',
-                'param' => '',
+                'param' => '(optional) Datetime or Date lastCall',
             ),
             'share list' => array(
                 'call' => 'POST',
