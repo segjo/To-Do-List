@@ -82,13 +82,12 @@ function getTodoListListItem(todoListContainerId, todoListEntryContainerId, todo
 
 function getTodoListEntryItem(listId, itemDescription) {
     var listItem = '';
-
     var title = itemDescription || ("Entry " + (Math.floor(Math.random() * 1000)));
     listItem += '<div id="listId_' + listId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
-    listItem += '  <h5 class="mb-1">' + title + '</h5>';
-    listItem += '  <small><img class="icon_small float-right" src="img/icon_calendar.png"></small>';
+    listItem += '  <h5 class="mb-1" onclick="javascript:showListEntryItemEditor("listId_' + listId + '");">' + title + '</h5>';
+    listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
     listItem += '<small>blah</small>';

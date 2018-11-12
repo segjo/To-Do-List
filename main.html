@@ -103,7 +103,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
-                    <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="javascript:shareList();">teilen</button>
+                    <button type="button" class="btn btn-success btn_share_list" data-dismiss="modal" onclick="javascript:shareList();">teilen</button>
                 </div>
 
             </div>
@@ -129,7 +129,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
-                    <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="javascript:deleteList();">löschen</button>
+                    <button type="button" class="btn btn-success btn_delete_list" data-dismiss="modal" onclick="javascript:deleteList();">löschen</button>
                 </div>
 
             </div>
@@ -155,9 +155,68 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
-                    <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="javascript:deleteList();">archivieren</button>
+                    <button type="button" class="btn btn-success btn_archive_list" data-dismiss="modal" onclick="javascript:deleteList();">archivieren</button>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Frist festlegen -->
+    <div class="modal" id="modal_set_deadline">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Frist festlegen</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input class="w-100 " type="date" name="">
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
+                    <button type="button" class="btn btn-success btn_set_deadline" data-dismiss="modal" onclick="javascript:deleteList();">festlegen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Priorität festlegen -->
+    <div class="modal" id="modal_set_priority">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Priorität festlegen</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <fieldset>
+                        <input id="txt_priority_high" name="set_priority" type="radio" checked/>
+                        <label for="txt_priority_high">hoch</label>
+                        <br>
+                        <input id="txt_priority_medium" name="set_priority" type="radio" />
+                        <label for="txt_priority_medium">mittel</label>
+                        <br>
+                        <input id="txt_priority_low" name="set_priority" type="radio" />
+                        <label for="txt_priority_low">tief</label>
+                    </fieldset>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
+                    <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="javascript:deleteList();">festlegen</button>
+                </div>
             </div>
         </div>
     </div>
