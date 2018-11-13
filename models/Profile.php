@@ -91,7 +91,7 @@ class Profile {
             return array('Response' => 401);
         }
 
-        $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
+        $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword`,`Image`  FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
         //return $sql;
         $sth = $this->db->prepare($sql);
         $sth->execute();
@@ -101,13 +101,18 @@ class Profile {
                 $dbSalt = $row['Salt'];
                 $dbHashedPassword = $row['EncryptedPassword'];
                 $dbEmailActiavated = $row['EmailActivated'];
+                if($row['Image']!=null){
+                    $avatar="uploads/".$row['Image'];
+                }else{
+                    $avatar=null;
+                }
             }
             if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
 
                 if ($dbEmailActiavated == 1) {
                     $_SESSION['login'] = true;
                     $_SESSION['userId'] = $this->getUserId($userName);
-                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userName' => $userName, 'userLocation' => $this->getUserLocation($this->getUserIP(), IPSTACK_ACCESSKEY)));
+                    return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userName' => $userName, 'userLocation' => $this->getUserLocation($this->getUserIP(), IPSTACK_ACCESSKEY)), 'userAvatar' => $avatar);
                 } else {
                     return array('Response' => 424, 'Content' => array('userId' => $this->getUserId($userName)));
                 }
