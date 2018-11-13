@@ -221,7 +221,7 @@ class Profile {
                     return array('Response' => 422, 'Content' => array('upload' => 'not successful'));
                 }
             } else {
-                echo "Sorry, there was an error uploading your file.";
+                return array('Response' => 422, 'Content' => array('upload' => 'not successful'));
             }
         }
     }
