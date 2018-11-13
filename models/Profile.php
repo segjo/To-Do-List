@@ -204,7 +204,7 @@ class Profile {
             }
 
 // Check file size
-            if ($file["size"] > 20000000) {
+            if ($file["size"] > 2000000) {
                 return array('Response' => 422, 'Content' => array('error' => 'File is too large (>20mb)'));
             }
 // Allow certain file formats
