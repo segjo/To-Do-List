@@ -208,7 +208,7 @@ class Profile {
             }
 // Check if $uploadOk is set to 0 by an error
 
-            $newfilename = uniqid(mt_rand());
+            $newfilename = uniqid(mt_rand()).".".$imageFileType;
             if (move_uploaded_file($file["tmp_name"], $target_dir . $newfilename)) {
                 echo "The file " . basename($file["name"]) . " has been uploaded.";
                 $date = date('Y-m-d H:i:s');
