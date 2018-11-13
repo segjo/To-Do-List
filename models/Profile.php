@@ -104,7 +104,7 @@ class Profile {
             }
             if (hash_hmac("sha256", $password, $dbSalt) == $dbHashedPassword) {
 
-                if ($dbEmailActiavated==1) {
+                if ($dbEmailActiavated == 1) {
                     $_SESSION['login'] = true;
                     $_SESSION['userId'] = $this->getUserId($userName);
                     return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userName' => $userName, 'userLocation' => $this->getUserLocation($this->getUserIP(), IPSTACK_ACCESSKEY)));
@@ -123,7 +123,7 @@ class Profile {
         if (!FormValidator::validateItem($password, 'password')) {
             return array('Response' => 401);
         }
-        $userId=$this->getOwnUserId();
+        $userId = $this->getOwnUserId();
         $userName = $this->getUserName($userId);
         $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword` FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
         //return $sql;
@@ -153,31 +153,77 @@ class Profile {
         } else {
             return array('Response' => 401);
         }
-
     }
-    
+
     public function getLists() {
-        
-        $userId=$this->getOwnUserId();
-        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner = 1 AND User.UserId = ".$userId." ORDER BY `List`.`SortIndex` DESC, `List`.`ListId` DESC";
+
+        $userId = $this->getOwnUserId();
+        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner = 1 AND User.UserId = " . $userId . " ORDER BY `List`.`SortIndex` DESC, `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $lists = $sth->fetch(PDO::FETCH_OBJ);
         //echo var_dump($lists);
         return array('Response' => 200, 'lists' => $lists);
     }
-    
+
     public function getSharedLists() {
-        
-        $userId=$this->getOwnUserId();
-        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.ShareActivated = 1 AND User.UserId = ".$userId." ORDER BY `List`.`ListId` DESC";
+
+        $userId = $this->getOwnUserId();
+        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.ShareActivated = 1 AND User.UserId = " . $userId . " ORDER BY `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $lists = $sth->fetchAll(FETCH_OBJ);
-        if($lists==false){
-            $lists=null;
+        if ($lists == false) {
+            $lists = null;
         }
         return array('Response' => 200, 'lists' => $lists);
+    }
+
+    public function uploadAvatar(array $file) {
+        $target_dir = "uploads/";
+        $target_file = $target_dir . basename($file["name"]);
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        // Check if image file is a actual image or fake image
+
+        if ($file["tmp_name"] == "") {
+            return array('Response' => 422, 'Content' => array('error' => 'no picture'));
+        } else {
+
+            echo $file["tmp_name"];
+
+            $check = getimagesize($file["tmp_name"]);
+            if ($check !== false) {
+                echo "File is an image - " . $check["mime"] . ".";
+            } else {
+                return array('Response' => 422, 'Content' => array('error' => 'File is not an image'));
+            }
+
+// Check file size
+            if ($file["size"] > 20000000) {
+                return array('Response' => 422, 'Content' => array('error' => 'File is too large (>20mb)'));
+            }
+// Allow certain file formats
+            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                return array('Response' => 422, 'Content' => array('error' => 'only JPG, JPEG, PNG & GIF files are allowed'));
+            }
+// Check if $uploadOk is set to 0 by an error
+
+            $newfilename = uniqid(mt_rand());
+            if (move_uploaded_file($file["tmp_name"], $target_dir . $newfilename)) {
+                echo "The file " . basename($file["name"]) . " has been uploaded.";
+                $date = date('Y-m-d H:i:s');
+                $sql = "UPDATE User SET UpdatedAt = '" . $date . "', Image = '" . $newfilename . "' WHERE User.UserId = " . $this->getOwnUserId() . "";
+                $statement = $this->db->prepare($sql);
+                $result = $statement->execute();
+                if ($result) {
+                    return array('Response' => 200, 'Content' => array('upload' => 'successful'));
+                } else {
+                    return array('Response' => 422, 'Content' => array('upload' => 'not successful'));
+                }
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+            }
+        }
     }
 
     private function getUserId($userName) {
@@ -217,31 +263,31 @@ class Profile {
             return false;
         }
     }
-    
+
     private function getUserIP() {
-    if( array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && !empty($_SERVER['HTTP_X_FORWARDED_FOR']) ) {
-        if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',')>0) {
-            $addr = explode(",",$_SERVER['HTTP_X_FORWARDED_FOR']);
-            return trim($addr[0]);
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') > 0) {
+                $addr = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
+                return trim($addr[0]);
+            } else {
+                return $_SERVER['HTTP_X_FORWARDED_FOR'];
+            }
         } else {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+            return $_SERVER['REMOTE_ADDR'];
         }
     }
-    else {
-        return $_SERVER['REMOTE_ADDR'];
-    }
-}
 
-    private function getUserLocation($ip, $access_key){
-        $request='http://api.ipstack.com/'.$ip.'?access_key='.$access_key;
-        
+    private function getUserLocation($ip, $access_key) {
+        $request = 'http://api.ipstack.com/' . $ip . '?access_key=' . $access_key;
+
         $ch = curl_init($request);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $json = curl_exec($ch);
         curl_close($ch);
         $api_result = json_decode($json, true);
-        return $api_result['location']['capital'];;
+        return $api_result['location']['capital'];
+        ;
     }
 
 }
