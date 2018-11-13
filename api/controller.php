@@ -58,7 +58,7 @@ switch ($urlPaths[URI_1]) {
                 if (file_exists($_FILES['image']['tmp_name'])) {
                     $returnValue = $profileModel->uploadAvatar($_FILES['image']);
                 } else {
-                    $returnValue = array('Response' => 400, 'Method' => "Profile upload avatar". $_FILES['image']['tmp_name']);
+                    $returnValue = array('Response' => 400, 'Method' => "Profile upload avatar");
                 }
             } else {
                 $returnValue = array('Response' => 401);
