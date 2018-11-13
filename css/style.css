@@ -1,0 +1,14 @@
+.icon_small {
+    width: 35px;
+    height: 35px;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.todo_list_title {
+    font-size: 18pt;
+}
+
+.todo_list_entry_add {
+    width: 100%;
+}
