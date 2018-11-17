@@ -92,7 +92,7 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
                 todoListEntryContainerElement.innerHTML = listItems;
 
                 var todoListTitleElement = document.getElementById(todoListTitleId);
-                todoListTitleElement.innerHTML = todoListTitleElement;
+                todoListTitleElement.innerHTML = todoListTitle;
 
                 addEventListenerForAddNewListEntryInputBox(listId);
             }
