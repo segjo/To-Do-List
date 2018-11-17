@@ -36,7 +36,7 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
         if (this.readyState == 4) {
             if (this.status == 200) {
                 console.log(xhr.responseText);
-                var lists = JSON.parse(xhr.responseText).Content;
+                var lists = JSON.parse(xhr.responseText).lists;
 
                 var listListItems = '<div class="list-group" id="todo_list_list">';
                 listListItems += '<div class="list-group-item">';
@@ -45,8 +45,8 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
 
                 listListItems += '<div>';
 
-                for (var i = 0; i < 2; i++) {
-                    listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, i, "List " + i);
+                for (var i = 0; i < list.length; i++) {
+                    listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, list[i].Name); // TODO: Get data from API
                 }
 
                 listListItems += '</div>';
@@ -73,7 +73,7 @@ function addTodoListItem(listId, itemDescription) {
     addEventListenerForAddNewListEntryInputBox(listId);
 }
 
-function fillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
+/*function fillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
 
     var listListItems = '<div class="list-group" id="todo_list_list">';
     listListItems += '<div class="list-group-item">';
@@ -82,14 +82,14 @@ function fillTodoListList(todoListContainerId, todoListEntryContainerId, todoLis
 
     listListItems += '<div>';
 
-    for (var i = 0; i < 2; i++) {
-        listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, i, "List " + i); // TODO: Get data from API
+    for (var i = 0; i < list.length; i++) {
+        listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, list[i].Name); // TODO: Get data from API
     }
 
     listListItems += '</div>';
 
     document.getElementById(todoListContainerId).innerHTML = listListItems;
-}
+}*/
 
 function fillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId) {
     var listItems = '';
