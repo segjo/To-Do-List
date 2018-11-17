@@ -19,7 +19,7 @@ ini_set('display_errors', 'on');
 date_default_timezone_set("Europe/Zurich");
 
 $mailer = new Mailer();
-$returnValue['Response']= getDescriptions();
+$returnValue['Response'] = getDescriptions();
 
 
 
@@ -154,35 +154,36 @@ switch ($urlPaths[URI_1]) {
             //----------------ITEMS---------------------
             if ($urlPaths[URI_3] == 'items') {
                 $listItemModel = new ListItem($dbh);
-
-                if ($urlPaths[URI_4] == 'add' && URI_REQ == 'POST') {
-                    if (isset($urlPaths[URI_2]) && isset($_POST["itemName"])) {
-                        $listId = $urlPaths[URI_2];
-                        $itemName = $_POST["itemName"];
-                        $returnValue = $listItemModel->add($listId, $itemName);
-                    } else {
-                        $returnValue = array('Response' => 400, 'Method' => "Item add");
+                if (isset($urlPaths[URI_4])) {
+                    if ($urlPaths[URI_4] == 'add' && URI_REQ == 'POST') {
+                        if (isset($urlPaths[URI_2]) && isset($_POST["itemName"])) {
+                            $listId = $urlPaths[URI_2];
+                            $itemName = $_POST["itemName"];
+                            $returnValue = $listItemModel->add($listId, $itemName);
+                        } else {
+                            $returnValue = array('Response' => 400, 'Method' => "Item add");
+                        }
                     }
-                }
-                if ($urlPaths[URI_4] != 'add' && $urlPaths[URI_4] != 'delete' && URI_REQ == 'POST') {
-                    if (isset($_POST["itemName"]) && isset($_POST["deadline"]) && isset($_POST["sortIndex"])) {
-                        $listId = $urlPaths[URI_2];
-                        $itemId = $urlPaths[URI_4];
-                        $itemName = $_POST["itemName"];
-                        $deadline = $_POST["deadline"];
-                        $sortIndex = $_POST["sortIndex"];
-                        $returnValue = $listItemModel->edit($listId, $itemId, $itemName, $deadline, $sortIndex);
-                    } else {
-                        $returnValue = array('Response' => 400, 'Method' => "Item edit");
+                    if ($urlPaths[URI_4] != 'add' && $urlPaths[URI_4] != 'delete' && URI_REQ == 'POST') {
+                        if (isset($_POST["itemName"]) && isset($_POST["deadline"]) && isset($_POST["sortIndex"])) {
+                            $listId = $urlPaths[URI_2];
+                            $itemId = $urlPaths[URI_4];
+                            $itemName = $_POST["itemName"];
+                            $deadline = $_POST["deadline"];
+                            $sortIndex = $_POST["sortIndex"];
+                            $returnValue = $listItemModel->edit($listId, $itemId, $itemName, $deadline, $sortIndex);
+                        } else {
+                            $returnValue = array('Response' => 400, 'Method' => "Item edit");
+                        }
                     }
-                }
-                if ($urlPaths[URI_4] == 'delete' && URI_REQ == 'POST') {
-                    if (isset($_POST["itemId"])) {
-                        $listId = $urlPaths[URI_2];
-                        $itemId = $_POST["itemId"];
-                        $returnValue = $listItemModel->delete($listId, $itemId);
-                    } else {
-                        $returnValue = array('Response' => 400, 'Method' => "Item delete");
+                    if ($urlPaths[URI_4] == 'delete' && URI_REQ == 'POST') {
+                        if (isset($_POST["itemId"])) {
+                            $listId = $urlPaths[URI_2];
+                            $itemId = $_POST["itemId"];
+                            $returnValue = $listItemModel->delete($listId, $itemId);
+                        } else {
+                            $returnValue = array('Response' => 400, 'Method' => "Item delete");
+                        }
                     }
                 }
             }
