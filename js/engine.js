@@ -1,9 +1,79 @@
+function loginScreen_ApiLogin() {
+    var userName = document.getElementById("userName").value;
+    var password = document.getElementById("password").value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                window.location = "main.html";
+                var user = JSON.parse(xhr.responseText).Content;
+                Cookies.set('user', JSON.stringify(user));
+                Cookies.set('PHPSESSID', user.userSessionId);
+            } else {
+                $('#modal_login_failed').modal();
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("userName", userName);
+    formData.append("password", password);
+
+    xhr.open("POST", "/api/profile/login", true);
+    xhr.send(formData);
+}
+
+function mainView_FillWithUserData() {
+    var user = JSON.parse(Cookies.get("user"));
+    document.getElementById("logged_user").innerHTML = user.userName;
+    document.getElementById("user_picture").src = ("https://todo.mynas.ch/" + user.userAvatar);
+}
+
+function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                console.log(xhr.responseText);
+                var lists = JSON.parse(xhr.responseText).lists;
+
+                var listListItems = '<div class="list-group" id="todo_list_list">';
+                listListItems += '<div class="list-group-item">';
+                listListItems += '<button class="btn todo_list_create_new_list w-100" id="todo_list_create_new_list" data-toggle="modal" data-target="#modal_create_list">Liste erstellen</button>';
+                listListItems += '</div>';
+
+                listListItems += '<div>';
+
+                for (var i = 0; i < lists.length; i++) {
+                    listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, list[i].Name); // TODO: Get data from API
+                }
+
+                listListItems += '</div>';
+
+                document.getElementById(todoListContainerId).innerHTML = listListItems;
+            }
+        }
+    };
+
+    xhr.open("GET", "/api/profile/lists", true);
+    xhr.send(null);
+}
+
+
+
+
+
+
+
+
+
 function addTodoListItem(listId, itemDescription) {
     document.getElementById("todo_list_entry_list").innerHTML += getTodoListEntryItem(listId, itemDescription);
     addEventListenerForAddNewListEntryInputBox(listId);
 }
 
-function fillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
+/*function fillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
 
     var listListItems = '<div class="list-group" id="todo_list_list">';
     listListItems += '<div class="list-group-item">';
@@ -12,14 +82,14 @@ function fillTodoListList(todoListContainerId, todoListEntryContainerId, todoLis
 
     listListItems += '<div>';
 
-    for (var i = 0; i < 2; i++) {
-        listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, i, "List " + i); // TODO: Get data from API
+    for (var i = 0; i < list.length; i++) {
+        listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, list[i].Name); // TODO: Get data from API
     }
 
     listListItems += '</div>';
 
     document.getElementById(todoListContainerId).innerHTML = listListItems;
-}
+}*/
 
 function fillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId) {
     var listItems = '';
