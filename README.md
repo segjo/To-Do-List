@@ -13,3 +13,4 @@ Manual installation
 - import mysql database backup, which found in config folder
 - edit config/_credentials.php
 - move config/_credentials.php to ../credentials.php (folder above web-root)
+- Set "AllowOverride All" in apache2 configuration for web directory
