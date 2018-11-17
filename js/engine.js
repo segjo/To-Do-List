@@ -46,7 +46,7 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
                 listListItems += '<div>';
 
                 for (var i = 0; i < lists.length; i++) {
-                    listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, list[i].Name); // TODO: Get data from API
+                    listListItems += mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, lists[i].Name); // TODO: Get data from API
                 }
 
                 listListItems += '</div>';
@@ -60,10 +60,87 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
     xhr.send(null);
 }
 
+function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                console.log(xhr.responseText);
+                var entries = JSON.parse(xhr.responseText).entries;
+
+                var listItems = '';
+                var i = 0;
+
+                listItems += '<div class="list-group" id="todo_list_entry_list">';
+                listItems += '<div class="list-group-item"><input class="form-control todo_list_entry_add" type="text"/></div>';
+
+                for (i = 0; i < entries.length; i++) {
+                    listItems += mainView_GetTodoListEntryItem(listId, entries[i].Name);
+                }
+
+                var todoLists = document.getElementsByClassName("todo_list");
+
+                for (i = 0; i < todoLists.length; i++) {
+                    todoLists[i].classList.remove("active");
+                }
+
+                var selectedTodoList = document.getElementById("listId_" + listId);
+                selectedTodoList.classList.add("active");
+
+                listItems += "</div>";
+
+                var todoListEntryContainer = document.getElementById(todoListEntryContainerId);
+                todoListEntryContainer.innerHTML = listItems;
+
+                var todoListTitle = document.getElementById(todoListTitleId);
+                todoListTitle.innerHTML = "TITLE";
+
+                addEventListenerForAddNewListEntryInputBox(listId);
+
+            }
+        }
+    };
+
+    xhr.open("GET", "/api/todolist/" + listId + "/items", true);
+    xhr.send(null);
+}
 
 
+function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, listId, title) {
 
+    var listItem = '';
 
+    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:fillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\');">';
+    listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
+    listItem += '<div class="d-flex w-100 justify-content-between">';
+    listItem += '  <h5 class="mb-1">' + title + '</h5>';
+    listItem += '  <small>blabla</small>';
+    listItem += '</div>';
+    listItem += '<p class="mb-1"></p>';
+    listItem += '<small>blah</small>';
+    listItem += '</a>';
+    listItem += '</div>';
+
+    return listItem;
+}
+
+function mainView_GetTodoListEntryItem(listId, itemDescription) {
+    var listItem = '';
+    var title = itemDescription;
+
+    listItem += '<div id="listId_' + listId + '" class="list-group-item">';
+    listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
+    listItem += '<div class="d-flex w-100 justify-content-between">';
+    listItem += '  <h5 class="mb-1" onclick="javascript:showListEntryItemEditor("listId_' + listId + '");">' + title + '</h5>';
+    listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
+    listItem += '</div>';
+    listItem += '<p class="mb-1"></p>';
+    listItem += '<small>blah</small>';
+    listItem += '</a>';
+    listItem += '</div>';
+
+    return listItem;
+}
 
 
 
@@ -90,7 +167,7 @@ function addTodoListItem(listId, itemDescription) {
 
     document.getElementById(todoListContainerId).innerHTML = listListItems;
 }*/
-
+/*
 function fillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId) {
     var listItems = '';
     var i = 0;
@@ -121,6 +198,7 @@ function fillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId) 
 
     addEventListenerForAddNewListEntryInputBox(listId);
 }
+*/
 
 function addEventListenerForAddNewListEntryInputBox(listId) {
     document.querySelector(".todo_list_entry_add").addEventListener("keyup", function(event) {
@@ -131,25 +209,7 @@ function addEventListenerForAddNewListEntryInputBox(listId) {
         event.srcElement.value = "";
     });
 }
-
-function getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, listId, title) {
-
-    var listItem = '';
-
-    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:fillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\');">';
-    listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
-    listItem += '<div class="d-flex w-100 justify-content-between">';
-    listItem += '  <h5 class="mb-1">' + title + '</h5>';
-    listItem += '  <small>blabla</small>';
-    listItem += '</div>';
-    listItem += '<p class="mb-1"></p>';
-    listItem += '<small>blah</small>';
-    listItem += '</a>';
-    listItem += '</div>';
-
-    return listItem;
-}
-
+/*
 function getTodoListEntryItem(listId, itemDescription) {
     var listItem = '';
     var title = itemDescription || ("Entry " + (Math.floor(Math.random() * 1000)));
@@ -165,7 +225,7 @@ function getTodoListEntryItem(listId, itemDescription) {
     listItem += '</div>';
 
     return listItem;
-}
+}*/
 
 function createList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
     var listName = document.getElementById("txt_create_list").value;
