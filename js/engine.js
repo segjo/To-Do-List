@@ -75,7 +75,7 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
                 listItems += '<div class="list-group-item"><input class="form-control todo_list_entry_add" type="text"/></div>';
 
                 for (i = 0; i < entries.length; i++) {
-                    listItems += mainView_GetTodoListEntryItem(listId, entries[i].ItemId, entries[i].Name);
+                    listItems += mainView_GetTodoListEntryItem(listId, entries[i].ItemId, entries[i].Name, entries[i].Deadline);
                 }
 
                 var todoLists = document.getElementsByClassName("todo_list");
@@ -114,28 +114,27 @@ function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContaine
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
-    listItem += '  <small>blabla</small>';
+    listItem += '  <small></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
-    listItem += '<small>blah</small>';
+    listItem += '<small></small>';
     listItem += '</a>';
     listItem += '</div>';
 
     return listItem;
 }
 
-function mainView_GetTodoListEntryItem(listId, entryId, itemDescription) {
+function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadline) {
     var listItem = '';
-    var title = itemDescription;
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div  class="d-flex w-100 justify-content-between">';
-    listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor("' + listId + '", "' + entryId + '");">' + title + '</h5>';
+    listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">' + itemDescription + '</h5>';
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
-    listItem += '<small>blah</small>';
+    listItem += '<small>' + deadline + '</small>';
     listItem += '</a>';
     listItem += '</div>';
 
@@ -143,7 +142,11 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription) {
 }
 
 
-
+function mainView_ShowListEntryItemEditor(element, listId, entryId) {
+    console.log(element);
+    console.log(listId);
+    console.log(entryId);
+}
 
 
 function addTodoListItem(listId, itemDescription) {
