@@ -40,7 +40,7 @@ class ListItem {
         }
     }
 
-    public function edit($listId, $itemId, $itemName, $deadline, $sortIndex) {
+    public function edit($listId, $itemId, $itemName, $deadline, $sortIndex, $state) {
         if (!FormValidator::validateItem($listId, 'number')) {
             return array('Response' => 422, 'ValdidateError' => 'listId');
         }
@@ -54,7 +54,7 @@ class ListItem {
             if (!FormValidator::validateItem($deadline, 'datetime')) {
                 return array('Response' => 422, 'ValdidateError' => 'deadline');
             }
-            $deadline = "'".$deadline."'";
+            $deadline = "'" . $deadline . "'";
         } else {
             $deadline = "NULL";
         }
@@ -65,6 +65,18 @@ class ListItem {
         } else {
             $sortIndex = 0;
         }
+        if ($state != "") {
+            if (!FormValidator::validateItem($state, 'number')) {
+                return array('Response' => 422, 'ValdidateError' => 'state');
+            }
+        } else {
+            $state = 0;
+        }
+
+        if($state>0){
+            $state=1; //only state 0 (uncheck) or 1 (check)
+        }
+
 
         $date = date('Y-m-d H:i:s');
 
@@ -75,12 +87,11 @@ class ListItem {
             $sth->execute();
             $lists = $sth->fetchAll();
             if (count($lists) > 0) {
-                $sqlInsertItem = "UPDATE Item SET Name = '" . $itemName . "', Deadline = " . $deadline . ", SortIndex = " . $sortIndex . ", UpdatedAt = '" . $date . "' WHERE ItemId = " . $itemId;
+                $sqlInsertItem = "UPDATE Item SET Name = '" . $itemName . "', Deadline = " . $deadline . ", State = " . $state . ", SortIndex = " . $sortIndex . ", UpdatedAt = '" . $date . "' WHERE ItemId = " . $itemId;
                 $dbh = $this->db;
                 $stmt = $dbh->prepare($sqlInsertItem);
                 $insertItem = $stmt->execute();
                 return array('Response' => 200, "success" => "true");
-
             } else {
                 return array('Response' => 404);
             }
@@ -88,12 +99,12 @@ class ListItem {
             return array('Response' => 404);
         }
     }
-    
+
     public function delete($listId, $itemId) {
         if (!FormValidator::validateItem($listId, 'number')) {
             return array('Response' => 422, 'ValdidateError' => 'listId');
         }
-        
+
 
         $date = date('Y-m-d H:i:s');
 
@@ -109,7 +120,6 @@ class ListItem {
                 $stmt = $dbh->prepare($sqlInsertItem);
                 $insertItem = $stmt->execute();
                 return array('Response' => 200, "success" => "true");
-
             } else {
                 return array('Response' => 404);
             }
@@ -117,8 +127,6 @@ class ListItem {
             return array('Response' => 404);
         }
     }
-    
-    
 
     private function checkListPermission($listId) {
 
