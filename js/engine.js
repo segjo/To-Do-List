@@ -60,7 +60,7 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
     xhr.send(null);
 }
 
-function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId, todoListTitle) {
+function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId, todoListContainerId, todoListTitle) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
