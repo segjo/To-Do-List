@@ -46,7 +46,7 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
                 listListItems += '<div>';
 
                 for (var i = 0; i < lists.length; i++) {
-                    listListItems += mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, lists[i].Name); // TODO: Get data from API
+                    listListItems += mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, lists[i].Name);
                 }
 
                 listListItems += '</div>';
@@ -110,7 +110,7 @@ function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContaine
 
     var listItem = '';
 
-    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:fillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\');">';
+    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:mainView_FillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\');">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
