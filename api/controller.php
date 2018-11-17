@@ -53,6 +53,17 @@ switch ($urlPaths[URI_1]) {
                 $returnValue = array('Response' => 400, 'Method' => "Profile Login");
             }
         }
+        if ($urlPaths[URI_2] == 'uploadAvatar' && URI_REQ == 'POST') {
+            if (isLoggedIn()) {
+                if (file_exists($_FILES['image']['tmp_name'])) {
+                    $returnValue = $profileModel->uploadAvatar($_FILES['image']);
+                } else {
+                    $returnValue = array('Response' => 400, 'Method' => "Profile upload avatar");
+                }
+            } else {
+                $returnValue = array('Response' => 401);
+            }
+        }
         if ($urlPaths[URI_2] == 'activate' && URI_REQ == 'GET') {
             if (isset($_GET["activateCode"])) {
                 $returnValue = $profileModel->activate($_GET["activateCode"]);
@@ -118,9 +129,9 @@ switch ($urlPaths[URI_1]) {
                     $listId = $urlPaths[URI_2];
                     if (isset($_GET["lastCall"])) {
                         $lastCall = $_GET["lastCall"];
-                    }else{
+                    } else {
                         $lastCall = null;
-                    }      
+                    }
                     $returnValue = $listModel->getListItems($listId, $lastCall);
                 } else {
                     $returnValue = array('Response' => 400, 'Method' => "Todolist get Items");

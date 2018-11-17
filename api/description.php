@@ -22,6 +22,11 @@ $returnValue = array(
             'path' => '/api/profile/delete',
             'param' => 'String password',
         ),
+        'uploadAvatar' => array(
+            'call' => 'POST',
+            'path' => '/api/profile/uploadAvatar',
+            'param' => 'File image',
+        ),
         'lists' => array(
             'call' => 'GET',
             'path' => '/api/profile/lists',
