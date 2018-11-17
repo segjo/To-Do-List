@@ -2,12 +2,12 @@ function loginScreen_ApiLogin() {
     var userName = document.getElementById("userName").value;
     var password = document.getElementById("password").value;
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 window.location = "main.html";
-                var user = JSON.parse(xhttp.responseText).Content;
+                var user = JSON.parse(xhr.responseText).Content;
                 Cookies.set('user', JSON.stringify(user));
                 Cookies.set('PHPSESSID', user.userSessionId);
             } else {
@@ -20,8 +20,8 @@ function loginScreen_ApiLogin() {
     formData.append("userName", userName);
     formData.append("password", password);
 
-    xhttp.open("POST", "https://todo.mynas.ch/api/profile/login", true);
-    xhttp.send(formData);
+    xhr.open("POST", "/api/profile/login", true);
+    xhr.send(formData);
 }
 
 function mainView_FillWithUserData() {
@@ -31,12 +31,12 @@ function mainView_FillWithUserData() {
 }
 
 function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                console.log(xhttp.responseText);
-                var lists = JSON.parse(xhttp.responseText).Content;
+                console.log(xhr.responseText);
+                var lists = JSON.parse(xhr.responseText).Content;
 
                 var listListItems = '<div class="list-group" id="todo_list_list">';
                 listListItems += '<div class="list-group-item">';
@@ -56,9 +56,8 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
         }
     };
 
-    xhttp.open("POST", "https://todo.mynas.ch/api/profile/lists", true);
-    xhttp.withCredentials = true;
-    xhttp.send(null);
+    xhr.open("POST", "/api/profile/lists", true);
+    xhr.send(null);
 }
 
 
