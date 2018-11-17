@@ -60,14 +60,13 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
     xhr.send(null);
 }
 
-function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId) {
+function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId, todoListTitle) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 console.log(xhr.responseText);
                 var entries = JSON.parse(xhr.responseText).entries;
-
                 var listItems = '';
                 var i = 0;
 
@@ -93,7 +92,7 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
                 todoListEntryContainer.innerHTML = listItems;
 
                 var todoListTitle = document.getElementById(todoListTitleId);
-                todoListTitle.innerHTML = "TITLE";
+                todoListTitle.innerHTML = todoListTitle;
 
                 addEventListenerForAddNewListEntryInputBox(listId);
 
@@ -110,7 +109,7 @@ function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContaine
 
     var listItem = '';
 
-    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:mainView_FillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\');">';
+    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:mainView_FillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\', \'' + title + '\');">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
