@@ -51,7 +51,7 @@ class ListItem {
             return array('Response' => 422, 'ValdidateError' => 'itemName');
         }
         if ($deadline != "") {
-            if (!FormValidator::validateItem($deadline, 'datetime')) {
+            if (!(FormValidator::validateItem($deadline, 'datetime')||FormValidator::validateItem($deadline, 'date'))) {
                 return array('Response' => 422, 'ValdidateError' => 'deadline');
             }
             $deadline = "'" . $deadline . "'";
