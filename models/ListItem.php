@@ -54,6 +54,10 @@ class ListItem {
             if (!(FormValidator::validateItem($deadline, 'datetime')||FormValidator::validateItem($deadline, 'date'))) {
                 return array('Response' => 422, 'ValdidateError' => 'deadline');
             }
+            if(!$this->is_date($deadline)){
+                return array('Response' => 422, 'ValdidateError' => 'deadline');
+            }
+            
             $deadline = "'" . $deadline . "'";
         } else {
             $deadline = "NULL";
@@ -150,5 +154,23 @@ class ListItem {
             return false;
         }
     }
+    
+    private function is_date( $str ) {
+    try {
+        $dt = new DateTime( trim($str) );
+    }
+    catch( Exception $e ) {
+        return false;
+    }
+    $month = $dt->format('m');
+    $day = $dt->format('d');
+    $year = $dt->format('Y');
+    if( checkdate($month, $day, $year) ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 }
