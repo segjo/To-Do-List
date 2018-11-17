@@ -165,13 +165,14 @@ switch ($urlPaths[URI_1]) {
                         }
                     }
                     if ($urlPaths[URI_4] != 'add' && $urlPaths[URI_4] != 'delete' && URI_REQ == 'POST') {
-                        if (isset($_POST["itemName"]) && isset($_POST["deadline"]) && isset($_POST["sortIndex"])) {
+                        if (isset($_POST["itemName"]) && isset($_POST["deadline"]) && isset($_POST["sortIndex"]) && isset($_POST["state"])) {
                             $listId = $urlPaths[URI_2];
                             $itemId = $urlPaths[URI_4];
                             $itemName = $_POST["itemName"];
                             $deadline = $_POST["deadline"];
                             $sortIndex = $_POST["sortIndex"];
-                            $returnValue = $listItemModel->edit($listId, $itemId, $itemName, $deadline, $sortIndex);
+                            $state = $_POST["state"];
+                            $returnValue = $listItemModel->edit($listId, $itemId, $itemName, $deadline, $sortIndex, $state);
                         } else {
                             $returnValue = array('Response' => 400, 'Method' => "Item edit");
                         }

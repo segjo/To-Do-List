@@ -149,7 +149,7 @@ class ToDoList {
 
 
         $userId = $this->getOwnUserId();
-        $sql = "SELECT Item.ItemId, Item.SortIndex, Item.Name, Item.Deadline FROM List, User2List, User, Item WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND Item.ListId = List.ListId AND (User2List.Owner=1 OR User2List.ShareActivated=1) AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND Item.DeletedAt is NULL AND User.UserId = " . $userId . " AND List.ListId = " . $listId . " ORDER BY Item.SortIndex DESC, Item.ItemId ASC";
+        $sql = "SELECT Item.ItemId, Item.SortIndex, Item.Name, Item.Deadline, Item.State FROM List, User2List, User, Item WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND Item.ListId = List.ListId AND (User2List.Owner=1 OR User2List.ShareActivated=1) AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND Item.DeletedAt is NULL AND User.UserId = " . $userId . " AND List.ListId = " . $listId . " ORDER BY Item.SortIndex DESC, Item.ItemId ASC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $items = $sth->fetchAll(PDO::FETCH_OBJ);
