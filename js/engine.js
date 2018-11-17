@@ -97,6 +97,7 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
                 addEventListenerForAddNewListEntryInputBox(listId);
             }
         }
+
     };
 
     xhr.open("GET", "/api/todolist/" + listId + "/items", true);
