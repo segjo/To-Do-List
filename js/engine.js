@@ -88,14 +88,13 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
 
                 listItems += "</div>";
 
-                var todoListEntryContainer = document.getElementById(todoListEntryContainerId);
-                todoListEntryContainer.innerHTML = listItems;
+                var todoListEntryContainerElement = document.getElementById(todoListEntryContainerId);
+                todoListEntryContainerElement.innerHTML = listItems;
 
-                var todoListTitle = document.getElementById(todoListTitleId);
-                todoListTitle.innerHTML = todoListTitle;
+                var todoListTitleElement = document.getElementById(todoListTitleId);
+                todoListTitleElement.innerHTML = todoListTitleElement;
 
                 addEventListenerForAddNewListEntryInputBox(listId);
-
             }
         }
     };
