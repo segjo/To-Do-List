@@ -46,7 +46,7 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
                 listListItems += '<div>';
 
                 for (var i = 0; i < lists.length; i++) {
-                    listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, list[i].Name); // TODO: Get data from API
+                    listListItems += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, lists[i].Name); // TODO: Get data from API
                 }
 
                 listListItems += '</div>';
