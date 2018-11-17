@@ -56,7 +56,7 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
         }
     };
 
-    xhr.open("POST", "/api/profile/lists", true);
+    xhr.open("GET", "/api/profile/lists", true);
     xhr.send(null);
 }
 
