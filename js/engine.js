@@ -114,10 +114,10 @@ function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContaine
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
-    listItem += '  <small>blabla</small>';
+    listItem += '  <small></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
-    listItem += '<small>blah</small>';
+    listItem += '<small></small>';
     listItem += '</a>';
     listItem += '</div>';
 
