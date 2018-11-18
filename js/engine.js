@@ -140,11 +140,12 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
-    listItem += '<div  class="d-flex w-100 justify-content-between">';
+    listItem += '<div class="checkbox"><input type="checkbox" value="" ' + ((state == 1) ? "checked" : "") + '><span class="cr"><i class="cr-icon fa fa-check"></i></span></div>';
+    listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">' + itemDescription + '</h5>';
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
-    listItem += '<p class="mb-1"><label class="btn btn-success active"><input type="checkbox" autocomplete="off" ' + ((state == 1) ? "checked" : "") + '><span class="glyphicon glyphicon-ok"></span></p>';
+    listItem += '<p class="mb-1"></span></p>';
     listItem += '<small></label> ' + deadline + '</small>';
     listItem += '</a>';
     listItem += '</div>';
