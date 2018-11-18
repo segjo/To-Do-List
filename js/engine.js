@@ -117,6 +117,24 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
 }
 
 
+function mainView_UpdateDoneState(element, listId, entryId) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("state", element.checked ? "1" : "0");
+
+    xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
+    xhr.send(formData);
+}
+
+
 function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, listId, title) {
 
     var listItem = '';
@@ -136,12 +154,13 @@ function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContaine
 }
 
 function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadline, state) {
+    var checkboxId = 'checkbox_done_entryId_' + entryId;
     var listItem = '';
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
-    listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');"><div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" ' + ((state == 1) ? "checked" : "") + '><span onclick="alert(\'test\');" class="cr"><i class="cr-icon fa fa-check"></i></span></label></div>' + itemDescription + '</h5>';
+    listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');"><div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" id="' + checkboxId + '" ' + ((state == 1) ? "checked" : "") + '><span onclick="javascript:mainView_UpdateDoneState(' + checkboxId + ', ' + listId + ', ' + entryId + ');" class="cr"><i class="cr-icon fa fa-check"></i></span></label></div>' + itemDescription + '</h5>';
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
