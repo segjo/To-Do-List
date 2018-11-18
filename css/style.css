@@ -13,6 +13,10 @@
     width: 100%;
 }
 
+.todo_list_entry_description_editor {
+    display: none;
+}
+
 .checkbox label:after,
 .radio label:after {
     content: '';

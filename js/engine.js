@@ -139,6 +139,11 @@ function mainView_UpdateDoneState(element, listId, entryId) {
     xhr.send(formData);
 }
 
+function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
+    if (event.keyCode == 13) {
+        event.target.display = "none";
+    }
+}
 
 function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, listId, title) {
 
@@ -165,7 +170,13 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
-    listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');"><div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" id="' + checkboxId + '" ' + ((state == 1) ? "checked" : "") + '><span onclick="javascript:mainView_UpdateDoneState(' + checkboxId + ', ' + listId + ', ' + entryId + ');" class="cr"><i class="cr-icon fa fa-check"></i></span></label></div>' + itemDescription + '</h5>';
+    listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">';
+    listItem += '     <div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" id="' + checkboxId + '" ' + ((state == 1) ? "checked" : "") + '>';
+    listItem += '       <span onclick="javascript:mainView_UpdateDoneState(' + checkboxId + ', ' + listId + ', ' + entryId + ');" class="cr"><i class="cr-icon fa fa-check"></i></span></label>';
+    listItem += '     </div>';
+    listItem += '     <input type="text" id="todo_list_entry_description_editor_entryId_' + entryId + '" class="todo_list_entry_description_editor" onkeydown="mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, ' + entryId + ');">';
+    listItem += '     ' + itemDescription;
+    listItem += '  </h5>';
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
@@ -178,9 +189,10 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
 
 
 function mainView_ShowListEntryItemEditor(element, listId, entryId) {
+    var editorElement = document.getElementById("todo_list_entry_description_editor_entryId_" + entryId);
+    editorElement.display = "block";
+
     console.log(element);
-    console.log(listId);
-    console.log(entryId);
 }
 
 
