@@ -25,9 +25,13 @@ function loginScreen_ApiLogin() {
 }
 
 function mainView_FillWithUserData() {
-    var user = JSON.parse(Cookies.get("user"));
-    document.getElementById("logged_user").innerHTML = user.userName;
-    document.getElementById("user_picture").src = user.userAvatar;
+    try {
+        var user = JSON.parse(Cookies.get("user"));
+        document.getElementById("logged_user").innerHTML = user.userName;
+        document.getElementById("user_picture").src = user.userAvatar;
+    } catch (error) {
+        window.location = "login.html";
+    }
 }
 
 function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
