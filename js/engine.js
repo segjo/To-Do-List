@@ -84,7 +84,7 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
                 listItems += '<div class="list-group-item"><input class="form-control todo_list_entry_add" type="text"/></div>';
 
                 for (i = 0; i < entries.length; i++) {
-                    listItems += mainView_GetTodoListEntryItem(listId, entries[i].ItemId, entries[i].Name, entries[i].Deadline);
+                    listItems += mainView_GetTodoListEntryItem(listId, entries[i].ItemId, entries[i].Name, entries[i].Deadline, entries[i].State);
                 }
 
                 var todoLists = document.getElementsByClassName("todo_list");
@@ -135,7 +135,7 @@ function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContaine
     return listItem;
 }
 
-function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadline) {
+function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadline, state) {
     var listItem = '';
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
@@ -144,8 +144,8 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">' + itemDescription + '</h5>';
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
-    listItem += '<p class="mb-1"></p>';
-    listItem += '<small><input type="checkbox" /> ' + deadline + '</small>';
+    listItem += '<p class="mb-1"><label class="btn btn-success active"><input type="checkbox" autocomplete="off" ' + ((state == 1) ? "checked" : "") + '><span class="glyphicon glyphicon-ok"></span></p>';
+    listItem += '<small></label> ' + deadline + '</small>';
     listItem += '</a>';
     listItem += '</div>';
 
