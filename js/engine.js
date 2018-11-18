@@ -123,8 +123,13 @@ function mainView_UpdateDoneState(element, listId, entryId) {
         if (this.readyState == 4) {
             if (this.status == 200) {
 
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            } else {
+                element.checked = !element.checked;
             }
         }
+
     };
 
     var formData = new FormData();
