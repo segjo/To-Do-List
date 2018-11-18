@@ -117,7 +117,7 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
 }
 
 
-function mainView_UpdateDoneState(elementId, listId, entryId) {
+function mainView_UpdateDoneState(element, listId, entryId) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -127,10 +127,8 @@ function mainView_UpdateDoneState(elementId, listId, entryId) {
         }
     };
 
-    var checkboxId = document.getElementById(elementId);
-
     var formData = new FormData();
-    formData.append("state", checkboxId.checked ? "1" : "0");
+    formData.append("state", (element.checked ? "1" : "0"));
 
     xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
     xhr.send(formData);
