@@ -124,13 +124,13 @@ function mainView_UpdateDoneState(element, listId, entryId) {
             if (this.status == 401) {
                 loginScreen_ShowPage();
             } else {
-                element.checked = !element.checked;
+                //element.checked = !element.checked;
             }
         }
     };
 
     var formData = new FormData();
-    formData.append("state", (element.checked ? "0" : "1"));
+    formData.append("state", (element.checked ? "1" : "0"));
     formData.append("sortIndex", "");
     formData.append("deadline", "");
     formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
