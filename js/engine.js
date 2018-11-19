@@ -265,7 +265,8 @@ function mainView_addTodoListItem(listId, itemDescription) {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 201) {
-                mainView_FillTodoListEntries();
+                var todoListTitleElement = document.getElementById("todo_list_title");
+                mainView_FillTodoListEntries(listId, todoListTitleElement.innerHTML);
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             } else if (this.status == 422) {
