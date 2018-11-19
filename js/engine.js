@@ -121,27 +121,53 @@ function mainView_UpdateDoneState(element, listId, entryId) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
-            if (this.status == 200) {
+            if (this.status == 401) {
+                loginScreen_ShowPage();
+            } else {
+                element.checked = !element.checked;
+            }
+        }
+    };
 
+    var formData = new FormData();
+    formData.append("state", (element.checked ? "0" : "1"));
+    formData.append("sortIndex", null);
+    formData.append("deadline", null);
+    formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
+
+    xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
+    xhr.send(formData);
+}
+
+function mainView_UpdateDeadlineFromEditorDialog() {
+    var entryId = document.getElementById("set_deadline_current_entry_id").innerHTML;
+    var deadline = document.getElementById("set_deadline_current_entry_deadline").value;
+
+    mainView_UpdateDeadline(entryId, deadline);
+}
+
+function mainView_UpdateDeadline(deadline, listId, entryId) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                document.getElementById("entry_deadline_" + entryId).innerText = deadline;
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             } else {
                 element.checked = !element.checked;
             }
         }
-
     };
 
     var formData = new FormData();
-    formData.append("state", (element.checked ? "0" : "1"));
-    formData.append("sortIndex", "");
-    formData.append("deadline", "");
+    formData.append("state", null);
+    formData.append("sortIndex", null);
+    formData.append("deadline", document.getElementById("entry_deadline_" + entryId).innerText);
     formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
 
     xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
     xhr.send(formData);
-
-    console.log(element.checked);
 }
 
 function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
@@ -182,16 +208,23 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '     <input type="text" id="todo_list_entry_description_editor_entryId_' + entryId + '" class="todo_list_entry_description_editor" onkeydown="mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, ' + entryId + ');">';
     listItem += '     <span id="entry_description_' + entryId + '">' + itemDescription + '</span>';
     listItem += '  </h5>';
-    listItem += '  <small><img class="icon_small f$loat-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
+    listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
-    listItem += '<small></label> ' + deadline + '</small>';
+    listItem += '<small><span id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
     listItem += '</a>';
     listItem += '</div>';
 
     return listItem;
 }
 
+function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
+    document.getElementById("set_deadline_current_list_id").innerHTML = listId;
+    document.getElementById("set_deadline_current_entry_id").innerHTML = entryId;
+    document.getElementById("set_deadline_current_entry_deadline").value = document.getElementById("entry_deadline_" + entryId).innerText;
+
+    $('#modal_set_deadline').modal();
+}
 
 function mainView_ShowListEntryItemEditor(element, listId, entryId) {
     var editorElement = document.getElementById("todo_list_entry_description_editor_entryId_" + entryId);
@@ -199,6 +232,13 @@ function mainView_ShowListEntryItemEditor(element, listId, entryId) {
 
     console.log(element);
 }
+
+
+
+
+
+
+
 
 
 

@@ -171,17 +171,19 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Frist festlegen</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <span id="set_deadline_current_list_id" class="hidden"></span>
+                    <span id="set_deadline_current_entry_id" class="hidden"></span>
                 </div>
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <input class="w-100 " type="date" name="">
+                    <input id="set_deadline_current_entry_deadline" class="w-100 " type="date" name="">
                 </div>
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
-                    <button type="button" class="btn btn-success btn_set_deadline" data-dismiss="modal" onclick="javascript:deleteList();">festlegen</button>
+                    <button type="button" class="btn btn-success btn_set_deadline" data-dismiss="modal" onclick="javascript:mainView_UpdateDeadlineFromEditorDialog();">festlegen</button>
                 </div>
             </div>
         </div>
