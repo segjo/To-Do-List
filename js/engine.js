@@ -104,7 +104,7 @@ function mainView_FillTodoListEntries(listId, todoListTitle) {
                 var todoListTitleElement = document.getElementById("todo_list_title");
                 todoListTitleElement.innerHTML = todoListTitle;
 
-                addEventListenerForAddNewListEntryInputBox(listId);
+                mainView_addEventListenerForAddNewListEntryInputBox(listId);
 
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
