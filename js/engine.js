@@ -131,8 +131,8 @@ function mainView_UpdateDoneState(element, listId, entryId) {
 
     var formData = new FormData();
     formData.append("state", (element.checked ? "0" : "1"));
-    formData.append("sortIndex", null);
-    formData.append("deadline", null);
+    formData.append("sortIndex", "");
+    formData.append("deadline", "");
     formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
 
     xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
@@ -160,8 +160,8 @@ function mainView_UpdateDeadline(deadline, listId, entryId) {
     };
 
     var formData = new FormData();
-    formData.append("state", null);
-    formData.append("sortIndex", null);
+    formData.append("state", "");
+    formData.append("sortIndex", "");
     formData.append("deadline", deadline);
     formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
 
