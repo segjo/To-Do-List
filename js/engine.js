@@ -221,6 +221,7 @@ function mainView_GetTodoListListItem(listId, title) {
 function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadline, state) {
     var checkboxId = 'checkbox_done_entryId_' + entryId;
     var listItem = '';
+    var deadline_element_class = deadline ? "font-weight-bold" : "text-muted";
 
     deadline = deadline || "keine Frist festgelegt";
 
@@ -237,7 +238,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
-    listItem += '<small><span id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
+    listItem += '<small><span class="' + deadline_element_class + '" id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
     listItem += '</a>';
     listItem += '</div>';
 
