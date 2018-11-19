@@ -155,8 +155,6 @@ function mainView_UpdateDeadline(deadline, listId, entryId) {
                 document.getElementById("entry_deadline_" + entryId).innerText = deadline;
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
-            } else {
-                element.checked = !element.checked;
             }
         }
     };
