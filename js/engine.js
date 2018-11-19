@@ -197,6 +197,8 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     var checkboxId = 'checkbox_done_entryId_' + entryId;
     var listItem = '';
 
+    deadline = deadline || "";
+
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
