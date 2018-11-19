@@ -38,7 +38,7 @@ function mainView_FillWithUserData() {
     }
 }
 
-function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
+function mainView_FillTodoListList() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -54,12 +54,12 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
                 listListItems += '<div>';
 
                 for (var i = 0; i < lists.length; i++) {
-                    listListItems += mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, lists[i].ListId, lists[i].Name);
+                    listListItems += mainView_GetTodoListListItem(lists[i].ListId, lists[i].Name);
                 }
 
                 listListItems += '</div>';
 
-                document.getElementById(todoListContainerId).innerHTML = listListItems;
+                document.getElementById("lists").innerHTML = listListItems;
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -70,7 +70,7 @@ function mainView_FillTodoListList(todoListContainerId, todoListEntryContainerId
     xhr.send(null);
 }
 
-function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoListTitleId, todoListContainerId, todoListTitle) {
+function mainView_FillTodoListEntries(listId, todoListTitle) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -98,10 +98,10 @@ function mainView_FillTodoListEntries(listId, todoListEntryContainerId, todoList
 
                 listItems += "</div>";
 
-                var todoListEntryContainerElement = document.getElementById(todoListEntryContainerId);
+                var todoListEntryContainerElement = document.getElementById("list_entries");
                 todoListEntryContainerElement.innerHTML = listItems;
 
-                var todoListTitleElement = document.getElementById(todoListTitleId);
+                var todoListTitleElement = document.getElementById("todo_list_title");
                 todoListTitleElement.innerHTML = todoListTitle;
 
                 addEventListenerForAddNewListEntryInputBox(listId);
@@ -169,17 +169,42 @@ function mainView_UpdateDeadline(deadline, listId, entryId) {
     xhr.send(formData);
 }
 
+function mainView_CreateListFromEditorDialog() {
+    var listName = document.getElementById("txt_create_list").value;
+
+    mainView_CreateList(listName);
+}
+
+function mainView_CreateList(listName) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 201) {
+                mainView_FillTodoListList();
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("listName", listName);
+
+    xhr.open("POST", "/api/todolist/create", true);
+    xhr.send(formData);
+}
+
 function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
     if (event.keyCode == 13) {
         event.target.display = "none";
     }
 }
 
-function mainView_GetTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, listId, title) {
+function mainView_GetTodoListListItem(listId, title) {
 
     var listItem = '';
 
-    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:mainView_FillTodoListEntries(' + listId + ',\'' + todoListEntryContainerId + '\', \'' + todoListTitleId + '\', \'' + todoListContainerId + '\', \'' + title + '\');">';
+    listItem += '<div id="listId_' + listId + '" class="list-group-item todo_list" onclick="javascript:mainView_FillTodoListEntries(' + listId + ',\'' + title + '\');">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">' + title + '</h5>';
@@ -197,7 +222,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     var checkboxId = 'checkbox_done_entryId_' + entryId;
     var listItem = '';
 
-    deadline = deadline || "";
+    deadline = deadline || "keine Frist festgelegt";
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
@@ -257,9 +282,4 @@ function addEventListenerForAddNewListEntryInputBox(listId) {
         addTodoListItem(listId, event.srcElement.value);
         event.srcElement.value = "";
     });
-}
-
-function createList(todoListContainerId, todoListEntryContainerId, todoListTitleId) {
-    var listName = document.getElementById("txt_create_list").value;
-    document.getElementById("todo_list_list").innerHTML += getTodoListListItem(todoListContainerId, todoListEntryContainerId, todoListTitleId, 89, listName);
 }

@@ -59,13 +59,12 @@
                 <div class="modal-body">
                     <label for="txt_create_list">Bezeichnung</label>
                     <input class="form-control" id="txt_create_list" type="text" />
-
                 </div>
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
-                    <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="javascript:createList('lists', 'list_entries');">erstellen</button>
+                    <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="javascript:mainView_CreateListFromEditorDialog();">erstellen</button>
                 </div>
 
             </div>
@@ -226,7 +225,7 @@
     <script src="js/engine.js"></script>
     <script>
         mainView_FillWithUserData();
-        mainView_FillTodoListList("lists", "list_entries", "todo_list_title");
+        mainView_FillTodoListList();
     </script>
 </body>
 
