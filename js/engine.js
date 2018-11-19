@@ -227,12 +227,12 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
     listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
-    listItem += '  <h5 class="mb-1" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">';
+    listItem += '  <h5 class="mb-1">';
     listItem += '     <div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" id="' + checkboxId + '" ' + ((state == 1) ? "checked" : "") + '>';
     listItem += '       <span onclick="javascript:mainView_UpdateDoneState(' + checkboxId + ', ' + listId + ', ' + entryId + ');" class="cr"><i class="cr-icon fa fa-check"></i></span></label>';
     listItem += '     </div>';
     listItem += '     <input type="text" id="todo_list_entry_description_editor_entryId_' + entryId + '" class="todo_list_entry_description_editor" onkeydown="mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, ' + entryId + ');">';
-    listItem += '     <span id="entry_description_' + entryId + '">' + itemDescription + '</span>';
+    listItem += '     <span id="entry_description_' + entryId + '" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">' + itemDescription + '</span>';
     listItem += '  </h5>';
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
     listItem += '</div>';
@@ -259,27 +259,32 @@ function mainView_ShowListEntryItemEditor(element, listId, entryId) {
     console.log(element);
 }
 
+function mainView_addTodoListItem(listId, itemDescription) {
 
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 201) {
+                mainView_FillTodoListEntries();
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            }
+        }
+    };
 
+    var formData = new FormData();
+    formData.append("itemName", itemDescription);
 
-
-
-
-
-
-
-
-function addTodoListItem(listId, itemDescription) {
-    document.getElementById("todo_list_entry_list").innerHTML += getTodoListEntryItem(listId, itemDescription);
-    addEventListenerForAddNewListEntryInputBox(listId);
+    xhr.open("POST", "/api/todolist/" + listId + "/items/add", true);
+    xhr.send(formData);
 }
 
-function addEventListenerForAddNewListEntryInputBox(listId) {
+function mainView_addEventListenerForAddNewListEntryInputBox(listId) {
     document.querySelector(".todo_list_entry_add").addEventListener("keyup", function(event) {
         if (event.key !== "Enter") {
             return;
         }
-        addTodoListItem(listId, event.srcElement.value);
+        mainView_addTodoListItem(listId, event.srcElement.value);
         event.srcElement.value = "";
     });
 }
