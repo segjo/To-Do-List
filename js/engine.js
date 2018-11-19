@@ -140,6 +140,8 @@ function mainView_UpdateDoneState(element, listId, entryId) {
 
     xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
     xhr.send(formData);
+
+    console.log(formData);
 }
 
 function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
@@ -180,7 +182,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '     <input type="text" id="todo_list_entry_description_editor_entryId_' + entryId + '" class="todo_list_entry_description_editor" onkeydown="mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, ' + entryId + ');">';
     listItem += '     <span id="entry_description_' + entryId + '">' + itemDescription + '</span>';
     listItem += '  </h5>';
-    listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
+    listItem += '  <small><img class="icon_small f$loat-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
     listItem += '<small></label> ' + deadline + '</small>';
