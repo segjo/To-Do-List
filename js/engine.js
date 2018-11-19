@@ -124,7 +124,7 @@ function mainView_UpdateDoneState(element, listId, entryId) {
             if (this.status == 401) {
                 loginScreen_ShowPage();
             } else {
-                element.checked = !element.checked;
+
             }
         }
     };
