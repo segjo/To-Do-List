@@ -133,7 +133,7 @@ function mainView_UpdateDoneState(element, listId, entryId) {
     };
 
     var formData = new FormData();
-    formData.append("state", (element.checked ? "1" : "0"));
+    formData.append("state", (element.checked ? "0" : "1"));
     formData.append("sortIndex", "");
     formData.append("deadline", "");
     formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
