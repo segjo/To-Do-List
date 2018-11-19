@@ -141,7 +141,7 @@ function mainView_UpdateDoneState(element, listId, entryId) {
     xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
     xhr.send(formData);
 
-    console.log(formData);
+    console.log(element.checked);
 }
 
 function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
