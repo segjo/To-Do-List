@@ -268,6 +268,8 @@ function mainView_addTodoListItem(listId, itemDescription) {
                 mainView_FillTodoListEntries();
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
+            } else if (this.status == 422) {
+                $('#modal_invalid_entry').modal();
             }
         }
     };
