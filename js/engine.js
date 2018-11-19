@@ -140,10 +140,11 @@ function mainView_UpdateDoneState(element, listId, entryId) {
 }
 
 function mainView_UpdateDeadlineFromEditorDialog() {
-    var entryId = document.getElementById("set_deadline_current_entry_id").innerHTML;
     var deadline = document.getElementById("set_deadline_current_entry_deadline").value;
+    var listId = document.getElementById("set_deadline_current_list_id").innerHTML;
+    var entryId = document.getElementById("set_deadline_current_entry_id").innerHTML;
 
-    mainView_UpdateDeadline(entryId, deadline);
+    mainView_UpdateDeadline(deadline, listId, entryId);
 }
 
 function mainView_UpdateDeadline(deadline, listId, entryId) {
