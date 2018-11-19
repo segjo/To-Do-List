@@ -163,7 +163,7 @@ function mainView_UpdateDeadline(deadline, listId, entryId) {
     var formData = new FormData();
     formData.append("state", null);
     formData.append("sortIndex", null);
-    formData.append("deadline", document.getElementById("entry_deadline_" + entryId).innerText);
+    formData.append("deadline", deadline);
     formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
 
     xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
