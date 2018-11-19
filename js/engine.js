@@ -134,6 +134,9 @@ function mainView_UpdateDoneState(element, listId, entryId) {
 
     var formData = new FormData();
     formData.append("state", (element.checked ? "1" : "0"));
+    formData.append("sortIndex", "");
+    formData.append("deadline", "");
+    formData.append("itemName", document.getElementById("entry_description_" + entryId).innerText);
 
     xhr.open("POST", "/api/todolist/" + listId + "/items/" + entryId, true);
     xhr.send(formData);
@@ -175,7 +178,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '       <span onclick="javascript:mainView_UpdateDoneState(' + checkboxId + ', ' + listId + ', ' + entryId + ');" class="cr"><i class="cr-icon fa fa-check"></i></span></label>';
     listItem += '     </div>';
     listItem += '     <input type="text" id="todo_list_entry_description_editor_entryId_' + entryId + '" class="todo_list_entry_description_editor" onkeydown="mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, ' + entryId + ');">';
-    listItem += '     ' + itemDescription;
+    listItem += '     <span id="entry_description_' + entryId + '">' + itemDescription + '</span>';
     listItem += '  </h5>';
     listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" data-toggle="modal" data-target="#modal_set_deadline"></small>';
     listItem += '</div>';
