@@ -36,7 +36,7 @@ class ToDoList {
                 $dbh->commit();
                 if ($insertLink) {
                     $insertFail = false;
-                    return array('Response' => 201, "success" => "true");
+                    return array('Response' => 201, "success" => "true", "ListId" => $insertedListId);
                 }
             }
 
