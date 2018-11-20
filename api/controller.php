@@ -116,74 +116,78 @@ switch ($urlPaths[URI_1]) {
                     $returnValue = array('Response' => 400, 'Method' => "Todolist create");
                 }
             }
-            if ($urlPaths[URI_3] == 'delete' && URI_REQ == 'POST') {
-                if (isset($urlPaths[URI_2])) {
-                    $listId = $urlPaths[URI_2];
-                    $returnValue = $listModel->delete($listId);
-                } else {
-                    $returnValue = array('Response' => 400, 'Method' => "Todolist delete");
-                }
-            }
 
-            if ($urlPaths[URI_3] == 'items' && !isset($urlPaths[URI_4]) && URI_REQ == 'GET') {
-                if (isset($urlPaths[URI_2])) {
-                    $listId = $urlPaths[URI_2];
-                    if (isset($_GET["lastCall"])) {
-                        $lastCall = $_GET["lastCall"];
+            if (isset($urlPaths[URI_3])) {
+                if ($urlPaths[URI_3] == 'delete' && URI_REQ == 'POST') {
+                    if (isset($urlPaths[URI_2])) {
+                        $listId = $urlPaths[URI_2];
+                        $returnValue = $listModel->delete($listId);
                     } else {
-                        $lastCall = null;
+                        $returnValue = array('Response' => 400, 'Method' => "Todolist delete");
                     }
-                    $returnValue = $listModel->getListItems($listId, $lastCall);
-                } else {
-                    $returnValue = array('Response' => 400, 'Method' => "Todolist get Items");
+                }
+
+                if ($urlPaths[URI_3] == 'items' && !isset($urlPaths[URI_4]) && URI_REQ == 'GET') {
+                    if (isset($urlPaths[URI_2])) {
+                        $listId = $urlPaths[URI_2];
+                        if (isset($_GET["lastCall"])) {
+                            $lastCall = $_GET["lastCall"];
+                        } else {
+                            $lastCall = null;
+                        }
+                        $returnValue = $listModel->getListItems($listId, $lastCall);
+                    } else {
+                        $returnValue = array('Response' => 400, 'Method' => "Todolist get Items");
+                    }
+                }
+
+                if ($urlPaths[URI_3] == 'share' && URI_REQ == 'POST') {
+                    if (isset($urlPaths[URI_2]) && isset($_POST["userName"])) {
+                        $listId = $urlPaths[URI_2];
+                        $userName = $_POST["userName"];
+                        $returnValue = $listModel->share($listId, $userName, $mailer);
+                    } else {
+                        $returnValue = array('Response' => 400, 'Method' => "Todolist share");
+                    }
                 }
             }
-
-            if ($urlPaths[URI_3] == 'share' && URI_REQ == 'POST') {
-                if (isset($urlPaths[URI_2]) && isset($_POST["userName"])) {
-                    $listId = $urlPaths[URI_2];
-                    $userName = $_POST["userName"];
-                    $returnValue = $listModel->share($listId, $userName, $mailer);
-                } else {
-                    $returnValue = array('Response' => 400, 'Method' => "Todolist share");
-                }
-            }
-
 
 
             //----------------ITEMS---------------------
-            if ($urlPaths[URI_3] == 'items') {
-                $listItemModel = new ListItem($dbh);
-                if (isset($urlPaths[URI_4])) {
-                    if ($urlPaths[URI_4] == 'add' && URI_REQ == 'POST') {
-                        if (isset($urlPaths[URI_2]) && isset($_POST["itemName"])) {
-                            $listId = $urlPaths[URI_2];
-                            $itemName = $_POST["itemName"];
-                            $returnValue = $listItemModel->add($listId, $itemName);
-                        } else {
-                            $returnValue = array('Response' => 400, 'Method' => "Item add");
+            if (isset($urlPaths[URI_3])) {
+                if ($urlPaths[URI_3] == 'items') {
+                    $listItemModel = new ListItem($dbh);
+                    if (isset($urlPaths[URI_4])) {
+                        if ($urlPaths[URI_4] == 'add' && URI_REQ == 'POST') {
+                            if (isset($urlPaths[URI_2]) && isset($_POST["itemName"])) {
+                                $listId = $urlPaths[URI_2];
+                                $itemName = $_POST["itemName"];
+                                $returnValue = $listItemModel->add($listId, $itemName);
+                            } else {
+                                $returnValue = array('Response' => 400, 'Method' => "Item add");
+                            }
                         }
-                    }
-                    if ($urlPaths[URI_4] != 'add' && $urlPaths[URI_4] != 'delete' && URI_REQ == 'POST') {
-                        if (isset($_POST["itemName"]) && isset($_POST["deadline"]) && isset($_POST["sortIndex"]) && isset($_POST["state"])) {
-                            $listId = $urlPaths[URI_2];
-                            $itemId = $urlPaths[URI_4];
-                            $itemName = $_POST["itemName"];
-                            $deadline = $_POST["deadline"];
-                            $sortIndex = $_POST["sortIndex"];
-                            $state = $_POST["state"];
-                            $returnValue = $listItemModel->edit($listId, $itemId, $itemName, $deadline, $sortIndex, $state);
-                        } else {
-                            $returnValue = array('Response' => 400, 'Method' => "Item edit");
+                        if ($urlPaths[URI_4] != 'add' && $urlPaths[URI_4] != 'delete' && URI_REQ == 'POST') {
+                            if (isset($_POST["itemName"]) && isset($_POST["deadline"]) && isset($_POST["sortIndex"]) && isset($_POST["state"])) {
+                                $listId = $urlPaths[URI_2];
+                                $itemId = $urlPaths[URI_4];
+                                $itemName = $_POST["itemName"];
+                                $deadline = $_POST["deadline"];
+                                $sortIndex = $_POST["sortIndex"];
+                                $state = $_POST["state"];
+                                $returnValue = $listItemModel->edit($listId, $itemId, $itemName, $deadline, $sortIndex, $state);
+                            } else {
+                                $returnValue = array('Response' => 400, 'Method' => "Item edit");
+                            }
                         }
-                    }
-                    if ($urlPaths[URI_4] == 'delete' && URI_REQ == 'POST') {
-                        if (isset($_POST["itemId"])) {
-                            $listId = $urlPaths[URI_2];
-                            $itemId = $_POST["itemId"];
-                            $returnValue = $listItemModel->delete($listId, $itemId);
-                        } else {
-                            $returnValue = array('Response' => 400, 'Method' => "Item delete");
+                        if ($urlPaths[URI_4] == 'delete' && URI_REQ == 'POST') {
+                            if (isset($_POST["itemId"])) {
+                                $listId = $urlPaths[URI_2];
+                                $itemId = $_POST["itemId"];
+                                $returnValue = $listItemModel->delete($listId, $itemId);
+                            } else {
+                                $returnValue = array('Response' => 400, 'Method' => "Item delete");
+                            }
                         }
                     }
                 }
