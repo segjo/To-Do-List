@@ -134,7 +134,6 @@ function mainView_DeleteCurrentList() {
 
     var formData = new FormData();
     formData.append("listId", listId);
-
     xhr.open("POST", "/api/todolist/" + listId + "/delete", true);
     xhr.send(formData);
 }
