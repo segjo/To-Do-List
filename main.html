@@ -136,6 +136,34 @@
         </div>
     </div>
 
+    <!-- Eintrag löschen bestätigen -->
+    <div class="modal" id="modal_confirm_delete_entry">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Eintrag löschen?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <span id="set_delete_entry_current_list_id" class="hidden"></span>
+                    <span id="set_delete_entry_current_entry_id" class="hidden"></span>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
+                    <button type="button" class="btn btn-success btn_delete_entry" data-dismiss="modal" onclick="javascript:mainView_DeleteEntryFromConfirmDialog();">löschen</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <!-- Liste archivieren bestätigen -->
     <div class="modal" id="modal_confirm_archive_list">
         <div class="modal-dialog">

@@ -173,7 +173,9 @@ function mainView_UpdateDeadline(deadline, listId, entryId) {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                document.getElementById("entry_deadline_" + entryId).innerText = deadline;
+                var deadlineElement = document.getElementById("entry_deadline_" + entryId);
+                deadlineElement.innerText = deadline;
+                deadlineElement.classList.add("font-weight-bold");
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -256,7 +258,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '     <input type="text" id="todo_list_entry_description_editor_entryId_' + entryId + '" class="todo_list_entry_description_editor" onkeydown="mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, ' + entryId + ');">';
     listItem += '     <span id="entry_description_' + entryId + '" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">' + itemDescription + '</span>';
     listItem += '  </h5>';
-    listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
+    listItem += '  <small><img class="icon_small float-right" src="img/icon_delete.png" onclick="mainView_ShowListEntryDeleteConfirmDialog(' + listId + ', ' + entryId + ');"><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
     listItem += '<small><span class="' + deadline_element_class + '" id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
@@ -264,6 +266,38 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '</div>';
 
     return listItem;
+}
+
+function mainView_ShowListEntryDeleteConfirmDialog(listId, entryId) {
+    document.getElementById("set_delete_entry_current_list_id").innerHTML = listId;
+    document.getElementById("set_delete_entry_current_entry_id").innerHTML = entryId;
+
+    $('#modal_confirm_delete_entry').modal();
+}
+
+function mainView_DeleteEntryFromConfirmDialog() {
+    listId = document.getElementById("set_delete_entry_current_list_id").innerHTML;
+    entryId = document.getElementById("set_delete_entry_current_entry_id").innerHTML;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var todoListTitleElement = document.getElementById("todo_list_title");
+                mainView_FillTodoListEntries(listId, todoListTitleElement.innerHTML);
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            } else if (this.status == 422) {
+                $('#modal_invalid_entry').modal();
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("itemId", entryId);
+
+    xhr.open("POST", "/api/todolist/" + listId + "/items/delete", true);
+    xhr.send(formData);
 }
 
 function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
