@@ -106,6 +106,8 @@ function mainView_FillTodoListEntries(listId, todoListTitle) {
 
                 mainView_addEventListenerForAddNewListEntryInputBox(listId);
 
+                document.getElementById("current_list_id").innerText = listId;
+
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -116,6 +118,26 @@ function mainView_FillTodoListEntries(listId, todoListTitle) {
     xhr.send(null);
 }
 
+function mainView_DeleteCurrentList() {
+    var listId = document.getElementById("current_list_id").innerText;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 201) {
+                mainView_FillTodoListList();
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("listId", listId);
+
+    xhr.open("POST", "/api/todolist/" + listId + "/delete", true);
+    xhr.send(formData);
+}
 
 function mainView_UpdateDoneState(element, listId, entryId) {
     var xhr = new XMLHttpRequest();

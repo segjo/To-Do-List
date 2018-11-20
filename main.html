@@ -44,6 +44,8 @@
         </div>
     </div>
 
+    <span id="current_list_id" class="hidden"></span>
+
     <!-- Liste erstellen -->
     <div class="modal" id="modal_create_list">
         <div class="modal-dialog">
@@ -128,7 +130,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
-                    <button type="button" class="btn btn-success btn_delete_list" data-dismiss="modal" onclick="javascript:deleteList();">löschen</button>
+                    <button type="button" class="btn btn-success btn_delete_list" data-dismiss="modal" onclick="javascript:mainView_DeleteCurrentList();">löschen</button>
                 </div>
 
             </div>
