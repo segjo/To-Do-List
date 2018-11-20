@@ -124,7 +124,7 @@ function mainView_DeleteCurrentList() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
-            if (this.status == 201) {
+            if (this.status == 200) {
                 mainView_FillTodoListList();
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
