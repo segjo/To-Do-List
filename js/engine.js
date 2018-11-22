@@ -10,9 +10,12 @@ function loginScreen_ApiLogin() {
                 var user = JSON.parse(xhr.responseText).Content;
                 Cookies.set('user', JSON.stringify(user));
                 Cookies.set('PHPSESSID', user.userSessionId);
+            } else if (this.status == 424) {
+                alert("Ihr Konto wurde noch nicht aktiviert.");
             } else {
                 $('#modal_login_failed').modal();
             }
+
         }
     };
 
