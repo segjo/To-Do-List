@@ -47,11 +47,11 @@ function registerScreen_RegisterUser() {
     };
 
     var formData = new FormData();
-    formData.append("firstName", listName);
-    formData.append("lastName", listName);
-    formData.append("email", listName);
-    formData.append("userName", listName);
-    formData.append("password", listName);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("userName", userName);
+    formData.append("password", password);
 
     xhr.open("POST", "/api/profile/create", true);
     xhr.send(formData);
