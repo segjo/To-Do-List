@@ -28,6 +28,35 @@ function loginScreen_ShowPage() {
     window.location = "login.html";
 }
 
+function registerScreen_RegisterUser() {
+    var firstName = document.getElementById("firstName").value;
+    var lastName = document.getElementById("lastName").value;
+    var email = document.getElementById("email").value;
+    var userName = document.getElementById("userName").value;
+    var password = document.getElementById("password").value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 201) {
+                loginScreen_ShowPage()
+            } else if (this.status == 409) {
+                alert("Benutzername bereits registriert.");
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("firstName", listName);
+    formData.append("lastName", listName);
+    formData.append("email", listName);
+    formData.append("userName", listName);
+    formData.append("password", listName);
+
+    xhr.open("POST", "/api/profile/create", true);
+    xhr.send(formData);
+}
+
 function mainView_FillWithUserData() {
     try {
         var user = JSON.parse(Cookies.get("user"));
