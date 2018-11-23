@@ -94,7 +94,7 @@ function mainView_FillTodoListList(selectFirstList, selectListId) {
 
                 if (selectFirstList && lists.length > 0) {
                     mainView_FillTodoListEntries(lists[0].ListId, lists[0].Name);
-                } else if (selectListIndex) {
+                } else if (selectListId) {
                     for (i = 0; i < lists.length; i++) {
                         if (lists[i].ListId == selectListId) {
                             mainView_FillTodoListEntries(lists[i].ListId, lists[i].Name);
