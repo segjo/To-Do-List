@@ -69,7 +69,7 @@ function mainView_FillWithUserData() {
     }
 }
 
-function mainView_FillTodoListList(selectFirstList) {
+function mainView_FillTodoListList(selectFirstList, selectListId) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -94,7 +94,15 @@ function mainView_FillTodoListList(selectFirstList) {
 
                 if (selectFirstList && lists.length > 0) {
                     mainView_FillTodoListEntries(lists[0].ListId, lists[0].Name);
+                } else if (selectListIndex) {
+                    for (i = 0; i < lists.length; i++) {
+                        if (lists[i].ListId == selectListId) {
+                            mainView_FillTodoListEntries(lists[i].ListId, lists[i].Name);
+                            break;
+                        }
+                    }
                 }
+
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -160,7 +168,7 @@ function mainView_DeleteCurrentList() {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainView_FillTodoListList(true);
+                mainView_FillTodoListList();
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -238,7 +246,8 @@ function mainView_CreateList(listName) {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 201) {
-                mainView_FillTodoListList();
+                var response = JSON.parse(this.responseText);
+                mainView_FillTodoListList(false, response.ListId);
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
