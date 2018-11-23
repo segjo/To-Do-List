@@ -93,7 +93,7 @@ function mainView_FillTodoListList(selectFirstList) {
                 document.getElementById("lists").innerHTML = listListItems;
 
                 if (selectFirstList && lists.length > 0) {
-                    mainView_FillTodoListEntries(lists[i].ListId);
+                    mainView_FillTodoListEntries(lists[0].ListId);
                 }
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
