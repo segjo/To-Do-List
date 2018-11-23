@@ -65,6 +65,15 @@ switch ($urlPaths[URI_1]) {
                 $returnValue = array('Response' => 401);
             }
         }
+        if ($urlPaths[URI_2] == 'info' && URI_REQ == 'GET') {
+            if (isLoggedIn()) {
+
+                    $returnValue = $profileModel->getOwnProfile();
+                
+            } else {
+                $returnValue = array('Response' => 401);
+            }
+        }
         if ($urlPaths[URI_2] == 'activate' && URI_REQ == 'GET') {
             if (isset($_GET["activateCode"])) {
                 $returnValue = $profileModel->activate($_GET["activateCode"]);
