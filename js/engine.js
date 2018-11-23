@@ -15,7 +15,6 @@ function loginScreen_ApiLogin() {
             } else {
                 $('#modal_login_failed').modal();
             }
-
         }
     };
 
@@ -70,7 +69,7 @@ function mainView_FillWithUserData() {
     }
 }
 
-function mainView_FillTodoListList() {
+function mainView_FillTodoListList(selectFirstList) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -92,6 +91,10 @@ function mainView_FillTodoListList() {
                 listListItems += '</div>';
 
                 document.getElementById("lists").innerHTML = listListItems;
+
+                if (selectFirstList && lists.length > 0) {
+                    mainView_FillTodoListEntries(lists[i].listId);
+                }
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -157,7 +160,7 @@ function mainView_DeleteCurrentList() {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainView_FillTodoListList();
+                mainView_FillTodoListList(true);
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -277,6 +280,9 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     var checkboxId = 'checkbox_done_entryId_' + entryId;
     var listItem = '';
     var deadline_element_class = deadline ? "font-weight-bold" : "text-muted";
+    var priority;
+
+    swit
 
     deadline = deadline || "keine Frist festgelegt";
 
@@ -293,7 +299,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '  <small><img class="icon_small float-right" src="img/icon_delete2.png" onclick="mainView_ShowListEntryDeleteConfirmDialog(' + listId + ', ' + entryId + ');"><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
-    listItem += '<small><span class="' + deadline_element_class + '" id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
+    listItem += '<small><span class="">' + priority + '</span><span class="' + deadline_element_class + '" id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
     listItem += '</a>';
     listItem += '</div>';
 
