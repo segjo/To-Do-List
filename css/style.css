@@ -5,6 +5,11 @@
     cursor: pointer;
 }
 
+.icon_big {
+    width: 128px;
+    height: 128px;
+}
+
 .todo_list_title {
     font-size: 18pt;
 }

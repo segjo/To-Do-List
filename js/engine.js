@@ -63,10 +63,15 @@ function mainView_FillWithUserData() {
     try {
         var user = JSON.parse(Cookies.get("user"));
         document.getElementById("logged_user").innerHTML = user.userName;
-        document.getElementById("user_picture").src = user.userAvatar;
+        mainView_UpdateUserPicture(user.userAvatar);
     } catch (error) {
         loginScreen_ShowPage();
     }
+}
+
+function mainView_UpdateUserPicture(url) {
+    document.getElementById("user_picture").src = url;
+    document.getElementById("user_picture_manage_profile").src = url;
 }
 
 function mainView_FillTodoListList(selectFirstList, selectListId) {
@@ -294,7 +299,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     deadline = deadline || "keine Frist festgelegt";
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
-    listItem += '<a class="list-group-item list-group-item-action flex-column align-items-start">';
+    listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">';
     listItem += '     <div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" id="' + checkboxId + '" ' + ((state == 1) ? "checked" : "") + '>';
