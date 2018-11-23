@@ -147,7 +147,7 @@ function mainView_FillTodoListEntries(listId, todoListTitle) {
                 var todoListTitleElement = document.getElementById("todo_list_title");
                 todoListTitleElement.innerHTML = todoListTitle;
 
-                mainView_addEventListenerForAddNewListEntryInputBox(listId);
+                mainView_AddEventListenerForAddNewListEntryInputBox(listId);
 
                 document.getElementById("current_list_id").innerText = listId;
 
@@ -294,7 +294,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     deadline = deadline || "keine Frist festgelegt";
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
-    listItem += '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">';
+    listItem += '<a class="list-group-item list-group-item-action flex-column align-items-start">';
     listItem += '<div class="d-flex w-100 justify-content-between">';
     listItem += '  <h5 class="mb-1">';
     listItem += '     <div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" id="' + checkboxId + '" ' + ((state == 1) ? "checked" : "") + '>';
@@ -353,10 +353,7 @@ function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
 }
 
 function mainView_ShowListEntryItemEditor(element, listId, entryId) {
-    var editorElement = document.getElementById("todo_list_entry_description_editor_entryId_" + entryId);
-    editorElement.display = "block";
 
-    console.log(element);
 }
 
 function mainView_addTodoListItem(listId, itemDescription) {
@@ -382,7 +379,7 @@ function mainView_addTodoListItem(listId, itemDescription) {
     xhr.send(formData);
 }
 
-function mainView_addEventListenerForAddNewListEntryInputBox(listId) {
+function mainView_AddEventListenerForAddNewListEntryInputBox(listId) {
     document.querySelector(".todo_list_entry_add").addEventListener("keyup", function(event) {
         if (event.key !== "Enter") {
             return;
