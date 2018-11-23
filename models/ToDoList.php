@@ -80,7 +80,7 @@ class ToDoList {
         if ($this->checkListPermission($listId, true)) {
 
                 $sqlUpdateList = "UPDATE List SET Name = '" . $listName . "'". $sqlPriority . " " . $sqlSortIndex . ", UpdatedAt = '" . $date . "' WHERE ListId = " . $listId; 
-                        
+                syslog(LOG_NOTICE, $sqlUpdateList);        
                 $dbh = $this->db;
                 $stmt = $dbh->prepare($sqlUpdateList);
                 $updateList = $stmt->execute();
