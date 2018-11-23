@@ -61,7 +61,7 @@ class ToDoList {
             if (!FormValidator::validateItem($priority, 'number')) {
                 return array('Response' => 422, 'ValdidateError' => 'priority');
             }
-            $sqlPriority = ", SET Priority = ".$priority;
+            $sqlPriority = ", Priority = ".$priority;
         } else {
             $sqlPriority = "";
         }
@@ -69,7 +69,7 @@ class ToDoList {
             if (!FormValidator::validateItem($sortIndex, 'number')) {
                 return array('Response' => 422, 'ValdidateError' => 'sortIndex');
             }
-            $sqlSortIndex = ", SET SortIndex = ".$sortIndex;
+            $sqlSortIndex = ", SortIndex = ".$sortIndex;
         } else {
             $sortIndex = "";
         }
