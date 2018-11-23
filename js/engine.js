@@ -168,7 +168,7 @@ function mainView_DeleteCurrentList() {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainView_FillTodoListList();
+                mainView_FillTodoListList(true);
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
