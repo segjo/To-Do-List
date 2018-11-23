@@ -93,7 +93,7 @@ function mainView_FillTodoListList(selectFirstList) {
                 document.getElementById("lists").innerHTML = listListItems;
 
                 if (selectFirstList && lists.length > 0) {
-                    mainView_FillTodoListEntries(lists[0].ListId);
+                    mainView_FillTodoListEntries(lists[0].ListId, lists[i].Name);
                 }
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
@@ -280,7 +280,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     var checkboxId = 'checkbox_done_entryId_' + entryId;
     var listItem = '';
     var deadline_element_class = deadline ? "font-weight-bold" : "text-muted";
-    var priority;
+    var priority = "";
 
     deadline = deadline || "keine Frist festgelegt";
 
