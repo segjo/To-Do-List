@@ -282,8 +282,6 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     var deadline_element_class = deadline ? "font-weight-bold" : "text-muted";
     var priority;
 
-    swit
-
     deadline = deadline || "keine Frist festgelegt";
 
     listItem += '<div id="todoListEntryId_' + entryId + '" class="list-group-item">';
