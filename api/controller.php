@@ -54,6 +54,15 @@ switch ($urlPaths[URI_1]) {
                 $returnValue = array('Response' => 400, 'Method' => "Profile Login");
             }
         }
+        
+        if ($urlPaths[URI_2] == 'logout' && URI_REQ == 'POST') {
+            if (isLoggedIn()) {
+                $returnValue = $profileModel->logout();
+            } else {
+                $returnValue = array('Response' => 401);
+            }
+        }
+        
         if ($urlPaths[URI_2] == 'uploadAvatar' && URI_REQ == 'POST') {
             if (isLoggedIn()) {
                 if (file_exists($_FILES['image']['tmp_name'])) {

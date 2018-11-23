@@ -145,6 +145,11 @@ class Profile {
             return array('Response' => 401);
         }
     }
+    
+    public function logout(){
+        session_destroy();
+        return array('Response' => 200, 'Content' => array('success' => true));
+    }
 
     public function delete($password) {
         if (!FormValidator::validateItem($password, 'password')) {

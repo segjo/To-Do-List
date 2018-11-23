@@ -18,6 +18,11 @@ function getDescriptions() {
                 'path' => '/api/profile/login/',
                 'param' => 'String userName, String password',
             ),
+            'logout' => array(
+                'call' => 'POST',
+                'path' => '/api/profile/logout/',
+                'param' => '',
+            ),
             'delete' => array(
                 'call' => 'POST',
                 'path' => '/api/profile/delete',
