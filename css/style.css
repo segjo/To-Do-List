@@ -79,3 +79,11 @@
 .hidden {
     display: none;
 }
+
+.lists {
+    padding: 5px;
+}
+
+.list_entries {
+    padding: 5px;
+}
