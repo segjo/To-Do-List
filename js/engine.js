@@ -10,6 +10,8 @@ function loginScreen_ApiLogin() {
                 var user = JSON.parse(xhr.responseText).Content;
                 Cookies.set('user', JSON.stringify(user));
                 Cookies.set('PHPSESSID', user.userSessionId);
+            } else if (this.status == 424) {
+                alert("Ihr Konto wurde noch nicht aktiviert.");
             } else {
                 $('#modal_login_failed').modal();
             }
@@ -28,17 +30,51 @@ function loginScreen_ShowPage() {
     window.location = "login.html";
 }
 
+function registerScreen_RegisterUser() {
+    var firstName = document.getElementById("firstName").value;
+    var lastName = document.getElementById("lastName").value;
+    var email = document.getElementById("email").value;
+    var userName = document.getElementById("userName").value;
+    var password = document.getElementById("password").value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 201) {
+                loginScreen_ShowPage()
+            } else if (this.status == 409) {
+                alert("Benutzername bereits registriert.");
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("userName", userName);
+    formData.append("password", password);
+
+    xhr.open("POST", "/api/profile/create", true);
+    xhr.send(formData);
+}
+
 function mainView_FillWithUserData() {
     try {
         var user = JSON.parse(Cookies.get("user"));
         document.getElementById("logged_user").innerHTML = user.userName;
-        document.getElementById("user_picture").src = user.userAvatar;
+        mainView_UpdateUserPicture(user.userAvatar);
     } catch (error) {
         loginScreen_ShowPage();
     }
 }
 
-function mainView_FillTodoListList() {
+function mainView_UpdateUserPicture(url) {
+    document.getElementById("user_picture").src = url;
+    document.getElementById("user_picture_manage_profile").src = url;
+}
+
+function mainView_FillTodoListList(selectFirstList, selectListId) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -60,6 +96,18 @@ function mainView_FillTodoListList() {
                 listListItems += '</div>';
 
                 document.getElementById("lists").innerHTML = listListItems;
+
+                if (selectFirstList && lists.length > 0) {
+                    mainView_FillTodoListEntries(lists[0].ListId, lists[0].Name);
+                } else if (selectListId) {
+                    for (i = 0; i < lists.length; i++) {
+                        if (lists[i].ListId == selectListId) {
+                            mainView_FillTodoListEntries(lists[i].ListId, lists[i].Name);
+                            break;
+                        }
+                    }
+                }
+
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -104,7 +152,9 @@ function mainView_FillTodoListEntries(listId, todoListTitle) {
                 var todoListTitleElement = document.getElementById("todo_list_title");
                 todoListTitleElement.innerHTML = todoListTitle;
 
-                mainView_addEventListenerForAddNewListEntryInputBox(listId);
+                mainView_AddEventListenerForAddNewListEntryInputBox(listId);
+
+                document.getElementById("current_list_id").innerText = listId;
 
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
@@ -116,6 +166,25 @@ function mainView_FillTodoListEntries(listId, todoListTitle) {
     xhr.send(null);
 }
 
+function mainView_DeleteCurrentList() {
+    var listId = document.getElementById("current_list_id").innerText;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainView_FillTodoListList(true);
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("listId", listId);
+    xhr.open("POST", "/api/todolist/" + listId + "/delete", true);
+    xhr.send(formData);
+}
 
 function mainView_UpdateDoneState(element, listId, entryId) {
     var xhr = new XMLHttpRequest();
@@ -152,7 +221,9 @@ function mainView_UpdateDeadline(deadline, listId, entryId) {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                document.getElementById("entry_deadline_" + entryId).innerText = deadline;
+                var deadlineElement = document.getElementById("entry_deadline_" + entryId);
+                deadlineElement.innerText = deadline;
+                deadlineElement.classList.add("font-weight-bold");
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -180,7 +251,8 @@ function mainView_CreateList(listName) {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 201) {
-                mainView_FillTodoListList();
+                var response = JSON.parse(this.responseText);
+                mainView_FillTodoListList(false, response.ListId);
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -222,6 +294,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     var checkboxId = 'checkbox_done_entryId_' + entryId;
     var listItem = '';
     var deadline_element_class = deadline ? "font-weight-bold" : "text-muted";
+    var priority = "";
 
     deadline = deadline || "keine Frist festgelegt";
 
@@ -232,17 +305,48 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '     <div class="checkbox float-left"><label style="font-size: 1em"><input type="checkbox" id="' + checkboxId + '" ' + ((state == 1) ? "checked" : "") + '>';
     listItem += '       <span onclick="javascript:mainView_UpdateDoneState(' + checkboxId + ', ' + listId + ', ' + entryId + ');" class="cr"><i class="cr-icon fa fa-check"></i></span></label>';
     listItem += '     </div>';
-    listItem += '     <input type="text" id="todo_list_entry_description_editor_entryId_' + entryId + '" class="todo_list_entry_description_editor" onkeydown="mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, ' + entryId + ');">';
     listItem += '     <span id="entry_description_' + entryId + '" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">' + itemDescription + '</span>';
     listItem += '  </h5>';
-    listItem += '  <small><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
+    listItem += '  <small><img class="icon_small float-right" src="img/icon_delete2.png" onclick="mainView_ShowListEntryDeleteConfirmDialog(' + listId + ', ' + entryId + ');"><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
-    listItem += '<small><span class="' + deadline_element_class + '" id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
+    listItem += '<small><span class="">' + priority + '</span><span class="' + deadline_element_class + '" id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
     listItem += '</a>';
     listItem += '</div>';
 
     return listItem;
+}
+
+function mainView_ShowListEntryDeleteConfirmDialog(listId, entryId) {
+    document.getElementById("set_delete_entry_current_list_id").innerHTML = listId;
+    document.getElementById("set_delete_entry_current_entry_id").innerHTML = entryId;
+
+    $('#modal_confirm_delete_entry').modal();
+}
+
+function mainView_DeleteEntryFromConfirmDialog() {
+    listId = document.getElementById("set_delete_entry_current_list_id").innerHTML;
+    entryId = document.getElementById("set_delete_entry_current_entry_id").innerHTML;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var todoListTitleElement = document.getElementById("todo_list_title");
+                mainView_FillTodoListEntries(listId, todoListTitleElement.innerHTML);
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            } else if (this.status == 422) {
+                $('#modal_invalid_entry').modal();
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append("itemId", entryId);
+
+    xhr.open("POST", "/api/todolist/" + listId + "/items/delete", true);
+    xhr.send(formData);
 }
 
 function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
@@ -254,10 +358,7 @@ function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
 }
 
 function mainView_ShowListEntryItemEditor(element, listId, entryId) {
-    var editorElement = document.getElementById("todo_list_entry_description_editor_entryId_" + entryId);
-    editorElement.display = "block";
 
-    console.log(element);
 }
 
 function mainView_addTodoListItem(listId, itemDescription) {
@@ -283,7 +384,7 @@ function mainView_addTodoListItem(listId, itemDescription) {
     xhr.send(formData);
 }
 
-function mainView_addEventListenerForAddNewListEntryInputBox(listId) {
+function mainView_AddEventListenerForAddNewListEntryInputBox(listId) {
     document.querySelector(".todo_list_entry_add").addEventListener("keyup", function(event) {
         if (event.key !== "Enter") {
             return;

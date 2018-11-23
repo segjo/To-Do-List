@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -20,14 +19,14 @@
     <div class="container h-100">
         <div class="row text-light">
             <div class="col-md-3 p-3 w-25 bg-primary todo_list_title">
-                <img class="icon_small float-left" id="user_picture" src="img/icon_user.png" />
+                <img class="icon_small float-left" id="user_picture" src="img/icon_user.png" data-toggle="modal" data-target="#modal_manage_profile" />
                 <div class="float-left" id="logged_user">LOGGED USER</div>
             </div>
             <div class="col-md-9 p-3 w-75 bg-secondary" id="commands">
                 <div class="container">
                     <div class="row">
                         <div class="col-sm w-100 todo_list_title" id="todo_list_title">
-                            List Title
+                            willkommen
                         </div>
                         <div class="col-sm w-25">
                             <img class="icon_small float-right" src="img/icon_archive.png" data-toggle="modal" data-target="#modal_confirm_archive_list">
@@ -39,8 +38,45 @@
             </div>
         </div>
         <div class="row text-light">
-            <div class="col-md-3 w-25 h-100 bg-dark no-float" id="lists">lists</div>
-            <div class="col-md-9 w-75 h-100 bg-info no-float" id="list_entries">list_entries</div>
+            <div class="col-md-3 w-25 h-100 bg-dark no-float" id="lists"></div>
+            <div class="col-md-9 w-75 h-100 bg-info no-float" id="list_entries"></div>
+        </div>
+    </div>
+
+    <span id="current_list_id" class="hidden"></span>
+
+
+    <!-- Profil verwalten -->
+    <div class="modal" id="modal_manage_profile">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Profil verwalten</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="float-left p-5">
+                        <img class="icon_big" id="user_picture_manage_profile">
+                    </div>
+                    <div class="float-left p-5">
+                        <label for="txt_user_first_name">Vorname</label>
+                        <input class="form-control" id="txt_user_first_name" type="text" />
+
+                        <label for="txt_user_last_name">name</label>
+                        <input class="form-control" id="txt_user_last_name" type="text" />
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
+                    <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="">bestätigen</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -66,7 +102,6 @@
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
                     <button type="button" class="btn btn-success btn_create_list" data-dismiss="modal" onclick="javascript:mainView_CreateListFromEditorDialog();">erstellen</button>
                 </div>
-
             </div>
         </div>
     </div>
@@ -128,7 +163,35 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
-                    <button type="button" class="btn btn-success btn_delete_list" data-dismiss="modal" onclick="javascript:deleteList();">löschen</button>
+                    <button type="button" class="btn btn-success btn_delete_list" data-dismiss="modal" onclick="javascript:mainView_DeleteCurrentList();">löschen</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Eintrag löschen bestätigen -->
+    <div class="modal" id="modal_confirm_delete_entry">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Eintrag löschen?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <span id="set_delete_entry_current_list_id" class="hidden"></span>
+                    <span id="set_delete_entry_current_entry_id" class="hidden"></span>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Abbruch</button>
+                    <button type="button" class="btn btn-success btn_delete_entry" data-dismiss="modal" onclick="javascript:mainView_DeleteEntryFromConfirmDialog();">löschen</button>
                 </div>
 
             </div>
