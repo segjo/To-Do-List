@@ -24,10 +24,10 @@ class Profile {
                 'Content' => array(
                     'userId' => $result[0]['UserId'],
                     'userName' => $result[0]['UserName'],
-                    'name' => $result[0]['Name'],
-                    'lastName' => $result[0]['LastName'],
-                    'email' => $result[0]['Email'],
-                    'avatar' => "uploads/".$result[0]['Image'],));
+                    'userFirstName' => $result[0]['Name'],
+                    'userLastName' => $result[0]['LastName'],
+                    'userEmail' => $result[0]['Email'],
+                    'userAvatar' => "uploads/".$result[0]['Image'],));
         }
         
         
