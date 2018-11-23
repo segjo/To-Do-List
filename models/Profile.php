@@ -20,9 +20,9 @@ class Profile {
         $sth->execute();
         $result = $sth->fetchAll();
         if (count($result) > 0) {
-                return $result[0]['UserId'];
             return array('Response' => 200, 
-                'Content' => array('userId' => $result[0]['UserId'],
+                'Content' => array(
+                    'userId' => $result[0]['UserId'],
                     'userName' => $result[0]['UserName'],
                     'name' => $result[0]['Name'],
                     'lastName' => $result[0]['LastName'],

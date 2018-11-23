@@ -67,7 +67,6 @@ switch ($urlPaths[URI_1]) {
         }
         if ($urlPaths[URI_2] == 'info' && URI_REQ == 'GET') {
             if (isLoggedIn()) {
-
                     $returnValue = $profileModel->getOwnProfile();
                 
             } else {
