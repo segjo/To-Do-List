@@ -126,6 +126,15 @@ switch ($urlPaths[URI_1]) {
                         $returnValue = array('Response' => 400, 'Method' => "Todolist delete");
                     }
                 }
+                
+                if ($urlPaths[URI_3] == 'edit' && URI_REQ == 'POST') {
+                    if (isset($urlPaths[URI_2])&& isset($_POST["listName"])&& isset($_POST["priority"])&& isset($_POST["sortIndex"])) {
+                        $listId = $urlPaths[URI_2];
+                        $returnValue = $listModel->edit($listId,$_POST["listName"],$_POST["priority"],$_POST["sortIndex"]);
+                    } else {
+                        $returnValue = array('Response' => 400, 'Method' => "Todolist edit");
+                    }
+                }
 
                 if ($urlPaths[URI_3] == 'items' && !isset($urlPaths[URI_4]) && URI_REQ == 'GET') {
                     if (isset($urlPaths[URI_2])) {

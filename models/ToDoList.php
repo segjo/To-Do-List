@@ -49,6 +49,48 @@ class ToDoList {
             return array('Response' => 422, 'Error' => $e->getMessage());
         }
     }
+    
+        public function edit($listId, $listName, $priority, $sortIndex) {
+        if (!FormValidator::validateItem($listId, 'number')) {
+            return array('Response' => 422, 'ValdidateError' => 'listId');
+        }
+        if (!FormValidator::validateItem($listName, 'listname')) {
+            return array('Response' => 422, 'ValdidateError' => 'listname');
+        }
+        if ($priority != "") {
+            if (!FormValidator::validateItem($priority, 'number')) {
+                return array('Response' => 422, 'ValdidateError' => 'priority');
+            }
+            $sqlPriority = ", SET Priority = ".$priority;
+        } else {
+            $sqlPriority = "";
+        }
+        if ($sortIndex != "") {
+            if (!FormValidator::validateItem($sortIndex, 'number')) {
+                return array('Response' => 422, 'ValdidateError' => 'sortIndex');
+            }
+            $sqlSortIndex = ", SET SortIndex = ".$sortIndex;
+        } else {
+            $sortIndex = "";
+        }
+
+
+        $date = date('Y-m-d H:i:s');
+
+        if ($this->checkListPermission($listId, true)) {
+
+                $sqlUpdateList = "UPDATE List SET Name = '" . $listName . "'". $sqlPriority . " " . $sqlSortIndex . ", UpdatedAt = '" . $date . "' WHERE ListId = " . $listId; 
+                        
+                $dbh = $this->db;
+                $stmt = $dbh->prepare($sqlUpdateList);
+                $updateList = $stmt->execute();
+                return array('Response' => 200, "success" => "true");
+
+        } else {
+            return array('Response' => 404);
+        }
+    }
+    
 
     public function share($listId, $userName, $mailer) {
         if (!FormValidator::validateItem($listId, 'number')) {

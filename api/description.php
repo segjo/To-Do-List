@@ -52,6 +52,11 @@ function getDescriptions() {
                     'path' => '/api/todolist/{listId}/delete',
                     'param' => '',
                 ),
+                'edit' => array(
+                    'call' => 'POST',
+                    'path' => '/api/todolist/{listId}/edit',
+                    'param' => 'String listName, int priority, int sortIndex',
+                ),
                 'list items' => array(
                     'call' => 'GET',
                     'path' => '/api/todolist/{listId}/items',
