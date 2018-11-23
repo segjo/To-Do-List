@@ -23,6 +23,11 @@ function getDescriptions() {
                 'path' => '/api/profile/delete',
                 'param' => 'String password',
             ),
+            'info' => array(
+                'call' => 'GET',
+                'path' => '/api/profile/info/',
+                'param' => '',
+            ),
             'uploadAvatar' => array(
                 'call' => 'POST',
                 'path' => '/api/profile/uploadAvatar',
