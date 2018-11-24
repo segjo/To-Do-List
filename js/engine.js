@@ -33,7 +33,7 @@ function mainView_UploadAvatar(evt) {
         if (this.readyState == 4) {
             loadingMessageShow(false);
             if (this.status == 200) {
-                alert("upload successful");
+                window.location.reload();
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
