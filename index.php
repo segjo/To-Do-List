@@ -2,16 +2,7 @@
 <?php
     session_start();
     if(!isset($_SESSION['login'])) {
-        header('LOCATION:./tmpLogin.php'); die();
+        header('LOCATION:./login.html'); die();
+    }else{
+        header('LOCATION:./main.html');
     }?>
-
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title></title>
-    </head>
-    <body>
-
-<a  href="tmpGitPull.php">Git pull</a>
-    </body>
-</html>
