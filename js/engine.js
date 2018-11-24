@@ -34,6 +34,7 @@ function mainView_UploadAvatar(evt) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
+                loadingMessageShow(false);
                 if (this.status == 200) {
                     alert("upload successful");
                 } else if (this.status == 401) {
@@ -42,6 +43,7 @@ function mainView_UploadAvatar(evt) {
             }
         };
 
+        loadingMessageShow(true);
         var formData = new FormData();
         formData.append("image", fileData.target.result);
         xhr.open("POST", "/api/profile/uploadAvatar", true);
@@ -417,4 +419,9 @@ function mainView_AddEventListenerForAddNewListEntryInputBox(listId) {
         mainView_addTodoListItem(listId, event.srcElement.value);
         event.srcElement.value = "";
     });
+}
+
+function loadingMessageShow(show) {
+    document.getElementById('loading_message').style.display = show ? 'block' : 'none';
+    document.getElementById('loading_over').style.display = show ? 'block' : 'none';
 }
