@@ -240,6 +240,7 @@ class Profile {
             }
 // Check if $uploadOk is set to 0 by an error
 
+            $oldAvatar= $this->getOwnProfile()['Content']['userAvatar'];
             $newfilename = uniqid(mt_rand()).".".$imageFileType;
             if (move_uploaded_file($file["tmp_name"], $target_dir . $newfilename)) {
                 echo "The file " . basename($file["name"]) . " has been uploaded.";
@@ -248,6 +249,9 @@ class Profile {
                 $statement = $this->db->prepare($sql);
                 $result = $statement->execute();
                 if ($result) {
+                    if($oldAvatar!=null){
+                        unlink($oldAvatar);
+                    }
                     return array('Response' => 200, 'Content' => array('upload' => 'successful'));
                 } else {
                     return array('Response' => 422, 'Content' => array('upload' => 'not successful'));
