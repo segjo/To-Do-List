@@ -54,6 +54,15 @@ switch ($urlPaths[URI_1]) {
                 $returnValue = array('Response' => 400, 'Method' => "Profile Login");
             }
         }
+        
+        if ($urlPaths[URI_2] == 'logout' && URI_REQ == 'POST') {
+            if (isLoggedIn()) {
+                $returnValue = $profileModel->logout();
+            } else {
+                $returnValue = array('Response' => 401);
+            }
+        }
+        
         if ($urlPaths[URI_2] == 'uploadAvatar' && URI_REQ == 'POST') {
             if (isLoggedIn()) {
                 if (file_exists($_FILES['image']['tmp_name'])) {
@@ -61,6 +70,14 @@ switch ($urlPaths[URI_1]) {
                 } else {
                     $returnValue = array('Response' => 400, 'Method' => "Profile upload avatar");
                 }
+            } else {
+                $returnValue = array('Response' => 401);
+            }
+        }
+        if ($urlPaths[URI_2] == 'info' && URI_REQ == 'GET') {
+            if (isLoggedIn()) {
+                    $returnValue = $profileModel->getOwnProfile();
+                
             } else {
                 $returnValue = array('Response' => 401);
             }
@@ -124,6 +141,15 @@ switch ($urlPaths[URI_1]) {
                         $returnValue = $listModel->delete($listId);
                     } else {
                         $returnValue = array('Response' => 400, 'Method' => "Todolist delete");
+                    }
+                }
+                
+                if ($urlPaths[URI_3] == 'edit' && URI_REQ == 'POST') {
+                    if (isset($urlPaths[URI_2])&& isset($_POST["listName"])&& isset($_POST["priority"])&& isset($_POST["sortIndex"])) {
+                        $listId = $urlPaths[URI_2];
+                        $returnValue = $listModel->edit($listId,$_POST["listName"],$_POST["priority"],$_POST["sortIndex"]);
+                    } else {
+                        $returnValue = array('Response' => 400, 'Method' => "Todolist edit");
                     }
                 }
 

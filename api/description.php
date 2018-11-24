@@ -18,10 +18,20 @@ function getDescriptions() {
                 'path' => '/api/profile/login/',
                 'param' => 'String userName, String password',
             ),
+            'logout' => array(
+                'call' => 'POST',
+                'path' => '/api/profile/logout/',
+                'param' => '',
+            ),
             'delete' => array(
                 'call' => 'POST',
                 'path' => '/api/profile/delete',
                 'param' => 'String password',
+            ),
+            'info' => array(
+                'call' => 'GET',
+                'path' => '/api/profile/info/',
+                'param' => '',
             ),
             'uploadAvatar' => array(
                 'call' => 'POST',
@@ -51,6 +61,11 @@ function getDescriptions() {
                     'call' => 'POST',
                     'path' => '/api/todolist/{listId}/delete',
                     'param' => '',
+                ),
+                'edit' => array(
+                    'call' => 'POST',
+                    'path' => '/api/todolist/{listId}/edit',
+                    'param' => 'String listName, int priority, int sortIndex',
                 ),
                 'list items' => array(
                     'call' => 'GET',

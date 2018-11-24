@@ -11,6 +11,28 @@ class Profile {
     function __construct(PDO $dbh) {
         $this->db = $dbh;
     }
+    
+    
+    public function getOwnProfile(){
+        $userId=$this->getOwnUserId();
+        $sql = "SELECT UserId, UserName, Name, LastName, Email, Image FROM `User` WHERE `UserId` = " . $userId;
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $result = $sth->fetchAll();
+        if (count($result) > 0) {
+            return array('Response' => 200, 
+                'Content' => array(
+                    'userId' => $result[0]['UserId'],
+                    'userName' => $result[0]['UserName'],
+                    'userFirstName' => $result[0]['Name'],
+                    'userLastName' => $result[0]['LastName'],
+                    'userEmail' => $result[0]['Email'],
+                    'userAvatar' => "uploads/".$result[0]['Image'],));
+        }
+        
+        
+    }
+    
 
     public function create($userName, $firstName, $lastName, $email, $password, $mailer) {
 
@@ -122,6 +144,11 @@ class Profile {
         } else {
             return array('Response' => 401);
         }
+    }
+    
+    public function logout(){
+        session_destroy();
+        return array('Response' => 200, 'Content' => array('success' => true));
     }
 
     public function delete($password) {
