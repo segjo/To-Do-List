@@ -248,8 +248,10 @@ class Profile {
                 $sql = "UPDATE User SET UpdatedAt = '" . $date . "', Image = '" . $newfilename . "' WHERE User.UserId = " . $this->getOwnUserId() . "";
                 $statement = $this->db->prepare($sql);
                 $result = $statement->execute();
+                syslog(LOG_NOTICE, "bild ".$newfilename." hochgeladen alt: ".$oldAvatar);
                 if ($result) {
                     if($oldAvatar!=null){
+                        syslog(LOG_NOTICE, "Lösche bild ".$oldAvatar);
                         unlink($oldAvatar);
                     }
                     return array('Response' => 200, 'Content' => array('upload' => 'successful'));
