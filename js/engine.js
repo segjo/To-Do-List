@@ -26,6 +26,31 @@ function loginScreen_ApiLogin() {
     xhr.send(formData);
 }
 
+function mainView_UploadAvatar(evt) {
+    var uploadFile = evt.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(fileData) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("upload successful");
+                } else if (this.status == 401) {
+                    loginScreen_ShowPage();
+                }
+            }
+        };
+
+        var formData = new FormData();
+        formData.append("image", fileData.target.result);
+        xhr.open("POST", "/api/profile/uploadAvatar", true);
+        xhr.send(formData);
+    }
+
+    reader.readAsDataURL(uploadFile);
+}
+
 function loginScreen_ShowPage() {
     window.location = "login.html";
 }

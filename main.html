@@ -18,8 +18,8 @@
 <body>
     <div class="container h-100">
         <div class="row text-light">
-            <div class="col-md-3 p-3 w-25 bg-primary todo_list_title">
-                <img class="icon_small float-left" id="user_picture" src="img/icon_user.png" data-toggle="modal" data-target="#modal_manage_profile" />
+            <div class="col-md-3 p-3 w-25 bg-primary todo_list_title" data-toggle="modal" data-target="#modal_manage_profile">
+                <img class="icon_small float-left" id="user_picture" src="img/icon_user.png" />
                 <div class="float-left" id="logged_user">LOGGED USER</div>
             </div>
             <div class="col-md-9 p-3 w-75 bg-secondary" id="commands">
@@ -61,6 +61,8 @@
                 <div class="modal-body">
                     <div class="float-left p-5">
                         <img class="icon_big" id="user_picture_manage_profile">
+                        <input type="file" id="picture_upload" onchange="mainView_UploadAvatar(event)" style="display:none" accept="image/*" />
+                        <button id="picture_upload_button" onclick="$('#picture_upload').trigger('click');">Bild ändern</button>
                     </div>
                     <div class="float-left p-5">
                         <label for="txt_user_first_name">Vorname</label>
