@@ -61,7 +61,7 @@
                 <div class="modal-body">
                     <div class="float-left p-5">
                         <img class="icon_big" id="user_picture_manage_profile">
-                        <input type="file" id="picture_upload" data-dismiss="modal" onchange="mainView_UploadAvatar(event)" style="display:none" accept="image/*" />
+                        <input type="file" id="picture_upload" onchange="mainView_UploadAvatar(event); $('#modal_manage_profile').modal('hide');" style="display:none" accept="image/*" />
                         <button id="picture_upload_button" onclick="$('#picture_upload').trigger('click');">Bild ändern</button>
                     </div>
                     <div class="float-left p-5">
