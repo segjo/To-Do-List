@@ -28,29 +28,23 @@ function loginScreen_ApiLogin() {
 
 function mainView_UploadAvatar(evt) {
     var uploadFile = evt.target.files[0];
-    var reader = new FileReader();
-
-    reader.onload = function(fileData) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4) {
-                loadingMessageShow(false);
-                if (this.status == 200) {
-                    alert("upload successful");
-                } else if (this.status == 401) {
-                    loginScreen_ShowPage();
-                }
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            loadingMessageShow(false);
+            if (this.status == 200) {
+                alert("upload successful");
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
             }
-        };
+        }
+    };
 
-        loadingMessageShow(true);
-        var formData = new FormData();
-        formData.append("image", fileData.target.result);
-        xhr.open("POST", "/api/profile/uploadAvatar", true);
-        xhr.send(formData);
-    }
-
-    reader.readAsDataURL(uploadFile);
+    loadingMessageShow(true);
+    var formData = new FormData();
+    formData.append("image", uploadFile);
+    xhr.open("POST", "/api/profile/uploadAvatar", true);
+    xhr.send(formData);
 }
 
 function loginScreen_ShowPage() {
@@ -382,6 +376,36 @@ function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
     document.getElementById("set_deadline_current_entry_deadline").value = document.getElementById("entry_deadline_" + entryId).innerText;
 
     $('#modal_set_deadline').modal();
+}
+
+function mainView_ShareListFromEditorDialog() {
+    var listId = document.getElementById("current_list_id").innerHTML;
+    var userName = document.getElementById("txt_share_list_to").innerHTML;
+    var permission = document.getElementById("share_list_permission").innerHTML;
+
+    mainView_ShareList(listId, userName, permission);
+}
+
+function mainView_ShareList(listId, userName, permission) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 201) {
+
+            } else if (this.status == 401) {
+
+            } else if (this.status == 422) {
+
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData
+    formData.append("userName", userName);
+
+    xhr.open("POST", "/api/todolist/" + listId + "/share", true);
+    xhr.send(formData);
 }
 
 function mainView_ShowListEntryItemEditor(element, listId, entryId) {
