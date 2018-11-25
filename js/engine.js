@@ -482,6 +482,20 @@ function updateAvatarFileUrlInCookies(newFileUrl) {
     Cookies.set('user', JSON.stringify(user));
 }
 
+function mainView_Logout() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 201) {
+                window.location = login.html;
+            }
+        }
+    };
+
+    xhr.open("POST", "/api/profile/logout", true);
+    xhr.send(null);
+}
+
 function loadingMessageShow(show) {
     document.getElementById('loading_message').style.display = show ? 'block' : 'none';
     document.getElementById('loading_over').style.display = show ? 'block' : 'none';
