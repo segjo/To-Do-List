@@ -487,9 +487,9 @@ function mainView_Logout() {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                window.location = login.html;
+                window.location = "login.html";
             } else if (this.status == 401) {
-                window.location = login.html;
+                window.location = "login.html";
             }
         }
     };
