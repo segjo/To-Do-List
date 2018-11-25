@@ -10,6 +10,13 @@
     height: 128px;
 }
 
+.picture_frame {
+    border: solid 1px #CCC;
+    -moz-box-shadow: 1px 1px 5px #999;
+    -webkit-box-shadow: 1px 1px 5px #999;
+    box-shadow: 1px 1px 5px #999;
+}
+
 .todo_list_title {
     font-size: 18pt;
 }
