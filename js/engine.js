@@ -486,7 +486,9 @@ function mainView_Logout() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
-            if (this.status == 201) {
+            if (this.status == 200) {
+                window.location = login.html;
+            } else if (this.status == 401) {
                 window.location = login.html;
             }
         }
