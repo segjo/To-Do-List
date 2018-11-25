@@ -57,13 +57,14 @@
                 </div>
 
                 <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="float-left p-5">
+                <div class="modal-body float-left ">
+                    <div class="p-5">
                         <img class="icon_big picture_frame" id="user_picture_manage_profile">
                         <input type="file" id="picture_upload" onchange="mainView_UploadAvatar(event);" style="display:none" accept="image/*" />
+                        <br>
                         <button id="picture_upload_button" onclick="$('#picture_upload').trigger('click');">Bild ändern</button>
                     </div>
-                    <div class="float-left p-5">
+                    <div class="p-5">
                         <label for="txt_user_username">Benutzername</label>
                         <input class="form-control" id="txt_user_username" type="text" />
 
