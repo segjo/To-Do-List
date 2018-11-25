@@ -478,3 +478,9 @@ function loadingMessageShow(show) {
     document.getElementById('loading_message').style.display = show ? 'block' : 'none';
     document.getElementById('loading_over').style.display = show ? 'block' : 'none';
 }
+
+function init() {
+    mainView_RefreshProfileInfo();
+    mainView_FillWithUserData();
+    mainView_FillTodoListList();
+}
