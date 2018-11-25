@@ -34,6 +34,9 @@ function mainView_UploadAvatar(evt) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 mainView_RefreshProfileInfo(true);
+            } else if (this.status == 400) {
+                loadingMessageShow(false);
+                $('#modal_manage_profile').modal();
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
