@@ -11,7 +11,7 @@ function loginScreen_ApiLogin() {
                 Cookies.set('user', JSON.stringify(user));
                 Cookies.set('PHPSESSID', user.userSessionId);
             } else if (this.status == 424) {
-                alert("Ihr Konto wurde noch nicht aktiviert.");
+                $('#modal_account_not_activated').modal();
             } else {
                 $('#modal_login_failed').modal();
             }
