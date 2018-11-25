@@ -31,9 +31,8 @@ function mainView_UploadAvatar(evt) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
-            loadingMessageShow(false);
             if (this.status == 200) {
-                window.location.reload();
+                mainView_RefreshProfileInfo();
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -45,6 +44,28 @@ function mainView_UploadAvatar(evt) {
     formData.append("image", uploadFile);
     xhr.open("POST", "/api/profile/uploadAvatar", true);
     xhr.send(formData);
+}
+
+function mainView_RefreshProfileInfo() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            loadingMessageShow(false);
+            if (this.status == 200) {
+                var response = JSON.parse(xhr.responseText);
+                updateAvatarFileUrlInCookies(response.userAvatar);
+                mainView_UpdateUserPicture(response.userAvatar);
+                document.getElementById("txt_user_first_name").value = response.userFirstName;
+                document.getElementById("txt_user_last_name").value = response.userFirstName;
+                loadingMessageShow(false);
+            } else if (this.status == 401) {
+                loginScreen_ShowPage();
+            }
+        }
+    };
+
+    xhr.open("GET", "/api/profile/info", true);
+    xhr.send(null);
 }
 
 function loginScreen_ShowPage() {
@@ -443,6 +464,12 @@ function mainView_AddEventListenerForAddNewListEntryInputBox(listId) {
         mainView_addTodoListItem(listId, event.srcElement.value);
         event.srcElement.value = "";
     });
+}
+
+function updateAvatarFileUrlInCookies(newFileUrl) {
+    var user = JSON.parse(Cookies.get("user"));
+    user.userAvatar = newFileUrl;
+    Cookies.set('user', JSON.stringify(user));
 }
 
 function loadingMessageShow(show) {
