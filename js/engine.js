@@ -27,12 +27,13 @@ function loginScreen_ApiLogin() {
 }
 
 function mainView_UploadAvatar(evt) {
+    $('#modal_manage_profile').modal('hide');
     var uploadFile = evt.target.files[0];
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainView_RefreshProfileInfo();
+                mainView_RefreshProfileInfo(true);
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
@@ -46,7 +47,7 @@ function mainView_UploadAvatar(evt) {
     xhr.send(formData);
 }
 
-function mainView_RefreshProfileInfo() {
+function mainView_RefreshProfileInfo(showProfileEditorAfterRefresh) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -60,6 +61,10 @@ function mainView_RefreshProfileInfo() {
                 document.getElementById("txt_user_first_name").value = response.userFirstName;
                 document.getElementById("txt_user_last_name").value = response.userFirstName;
                 loadingMessageShow(false);
+
+                if (showProfileEditorAfterRefresh) {
+                    $('#modal_manage_profile').modal();
+                }
             } else if (this.status == 401) {
                 loginScreen_ShowPage();
             }
