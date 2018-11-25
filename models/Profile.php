@@ -74,6 +74,7 @@ class Profile {
         $insert = $statement->execute(array(NULL, $firstName, $lastName, $email, $actCode, '0', $userName, NULL, hash_hmac("sha256", $password, $salt), $salt, $date, NULL, NULL));
         if ($insert) {
             $mailer->sendActivationMail($email, $userName, $actCode);
+            syslog(LOG_NOTICE, "Registration $userName successfull: $date {$_SERVER['REMOTE_ADDR']} ({$_SERVER['HTTP_USER_AGENT']})");
             return array('Response' => 201, 'Content' => array('userId' => $this->getUserId($userName)));
         } else {
             return array('Response' => 422);
@@ -112,7 +113,7 @@ class Profile {
         if (!FormValidator::validateItem($password, 'password')) {
             return array('Response' => 401);
         }
-
+        $date = date('Y-m-d H:i:s');
         $sql = "SELECT `EmailActivated`,`UserName`,`Salt`,`EncryptedPassword`,`Image`  FROM `User` WHERE `UserName` = '" . $userName . "' AND DeletedAt IS NULL LIMIT 1";
         //return $sql;
         $sth = $this->db->prepare($sql);
@@ -134,11 +135,13 @@ class Profile {
                 if ($dbEmailActiavated == 1) {
                     $_SESSION['login'] = true;
                     $_SESSION['userId'] = $this->getUserId($userName);
+                    syslog(LOG_NOTICE, "Login $userName successfull: $date {$_SERVER['REMOTE_ADDR']} ({$_SERVER['HTTP_USER_AGENT']})");
                     return array('Response' => 200, 'Content' => array('userId' => $this->getUserId($userName), 'userName' => $userName, 'userLocation' => $this->getUserLocation($this->getUserIP(), IPSTACK_ACCESSKEY), 'userAvatar' => $avatar, 'userSessionId' => session_id()));
                 } else {
                     return array('Response' => 424, 'Content' => array('userId' => $this->getUserId($userName)));
                 }
             } else {
+                syslog(LOG_NOTICE, "Login $userName failed: $date {$_SERVER['REMOTE_ADDR']} ({$_SERVER['HTTP_USER_AGENT']})");
                 return array('Response' => 401);
             }
         } else {
@@ -240,6 +243,7 @@ class Profile {
             }
 // Check if $uploadOk is set to 0 by an error
 
+            $oldAvatar= $this->getOwnProfile()['Content']['userAvatar'];
             $newfilename = uniqid(mt_rand()).".".$imageFileType;
             if (move_uploaded_file($file["tmp_name"], $target_dir . $newfilename)) {
                 echo "The file " . basename($file["name"]) . " has been uploaded.";
@@ -248,6 +252,9 @@ class Profile {
                 $statement = $this->db->prepare($sql);
                 $result = $statement->execute();
                 if ($result) {
+                    if($oldAvatar!=null){
+                        unlink("../".$oldAvatar);
+                    }
                     return array('Response' => 200, 'Content' => array('upload' => 'successful'));
                 } else {
                     return array('Response' => 422, 'Content' => array('upload' => 'not successful'));
