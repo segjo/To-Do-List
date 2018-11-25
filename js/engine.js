@@ -52,9 +52,11 @@ function mainView_RefreshProfileInfo() {
         if (this.readyState == 4) {
             loadingMessageShow(false);
             if (this.status == 200) {
-                var response = JSON.parse(xhr.responseText);
+                var response = JSON.parse(xhr.responseText).Content;
                 updateAvatarFileUrlInCookies(response.userAvatar);
                 mainView_UpdateUserPicture(response.userAvatar);
+                document.getElementById("txt_user_username").value = response.userName;
+                document.getElementById("txt_user_email").value = response.userEmail;
                 document.getElementById("txt_user_first_name").value = response.userFirstName;
                 document.getElementById("txt_user_last_name").value = response.userFirstName;
                 loadingMessageShow(false);
