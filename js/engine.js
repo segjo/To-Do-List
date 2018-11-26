@@ -463,6 +463,8 @@ function mainView_ShareList(listId, userName, permission) {
                 loginScreen_ShowPage();
             } else if (this.status == 404) {
                 alert("Der Benutzer '" + userName + "' existiert nicht");
+            } else if (this.status == 404) {
+                alert("Liste entweder schon mit '" + userName + "' geteilt oder Sie sind '" + userName + "'");
             } else if (this.status == 422) {
                 alert("Parameter ungültig. Haben Sie eine Liste ausgewählt?");
             }
