@@ -360,7 +360,7 @@ function mainView_GetTodoListListItem(listId, title, sharedList, owner) {
     listItem += '  <small></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
-    listItem += '<small>' + (sharedList ? '<img src="img/icon_share.png" width="16" height="16">' : '') + " " + owner + '</small>';
+    listItem += '<small>' + (sharedList ? ('<img src="img/icon_share.png" width="16" height="16"> ' + (owner || "")) : '') + '</small>';
     listItem += '</a>';
     listItem += '</div>';
 
