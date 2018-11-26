@@ -180,6 +180,11 @@ function mainView_AppendSharedListsToTodoListList() {
                 var todoListList = document.getElementById("todo_list_list");
 
                 for (var i = 0; i < lists.length; i++) {
+
+                    if (document.getElementById("listId_" + lists[i].ListId)) {
+                        continue;
+                    }
+
                     todoListList.innerHTML += mainView_GetTodoListListItem(lists[i].ListId, lists[i].Name, true);
                 }
             }
