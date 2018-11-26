@@ -412,7 +412,7 @@ function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
 function mainView_ShareListFromEditorDialog() {
     var listId = document.getElementById("current_list_id").innerHTML;
     var userName = document.getElementById("txt_share_list_to").innerHTML;
-    var permission = document.querySelector('input[name="share_list_permission"]:checked').value;
+    var permission = document.querySelector('input[name="share_list_permission"]:checked').title;
 
     mainView_ShareList(listId, userName, permission);
 }
