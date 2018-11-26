@@ -193,7 +193,9 @@ class Profile {
     public function getLists() {
 
         $userId = $this->getOwnUserId();
-        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner = 1 AND User.UserId = " . $userId . " ORDER BY `List`.`SortIndex` DESC, `List`.`ListId` DESC";
+        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority ".
+                "FROM List, User2List, User ".
+                "WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.Owner = 1 AND User.UserId = " . $userId . " ORDER BY `List`.`SortIndex` DESC, `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $lists = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -204,7 +206,10 @@ class Profile {
     public function getSharedLists() {
 
         $userId = $this->getOwnUserId();
-        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority FROM List, User2List, User WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.ShareActivated = 1 AND User.UserId = " . $userId . " ORDER BY `List`.`ListId` DESC";
+        $sql = "SELECT List.ListId, List.Name, List.SortIndex ,List.Priority, ".
+                "(SELECT User.UserName FROM User2List, User WHERE User2List.UserId=User.UserId AND User2List.DeletedAt is NULL AND User2List.Owner=1 AND User2List.ListId = List.ListId) AS Owner ".
+                "FROM List, User2List, User ".
+                "WHERE List.ListId=User2List.ListId AND User2List.UserId = User.UserId AND List.DeletedAt is NULL AND User2List.DeletedAt is NULL AND User2List.ShareActivated = 1 AND User.UserId = " . $userId . " ORDER BY `List`.`ListId` DESC";
         $sth = $this->db->prepare($sql);
         $sth->execute();
         $lists = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -327,6 +332,24 @@ class Profile {
         $api_result = json_decode($json, true);
         return $api_result['location']['capital'];
         ;
+    }
+    
+        private function getListOwner($listId) {
+
+            $sql = "SELECT User.UserId, User.Name FROM User2List, User WHERE User2List.UserId=User.UserId AND User2List.DeletedAt is NULL AND User2List.Owner=1 AND User2List.ListId = " . $listId. " ";
+ 
+        
+
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $lists = $sth->fetchAll();
+        if (count($lists) > 0) {
+            foreach ($result as $row) {
+                return $row['User.UserId'];
+            }
+        } else {
+            return false;
+        }
     }
 
 }
