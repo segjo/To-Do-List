@@ -443,6 +443,13 @@ function mainView_ShareListFromEditorDialog() {
 }
 
 function mainView_ShareList(listId, userName, permission) {
+
+    var user = JSON.parse(Cookies.get("user"));
+    if (user.userName == userName) {
+        alert("Sie können nicht eine Liste mit sich selbst teilen 😱😱😱 !");
+        return;
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
