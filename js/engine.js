@@ -435,6 +435,8 @@ function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
 }
 
 function mainView_ShareListFromEditorDialog() {
+    $('#modal_share_list').modal('hide');
+
     var listId = document.getElementById("current_list_id").innerHTML;
     var userName = document.getElementById("txt_share_list_to").value;
     var permission = document.querySelector('input[name="share_list_permission"]:checked').title;
@@ -463,6 +465,8 @@ function mainView_ShareList(listId, userName, permission) {
                 loginScreen_ShowPage();
             } else if (this.status == 404) {
                 alert("Der Benutzer '" + userName + "' existiert nicht");
+            } else if (this.status == 409) {
+                alert("Liste entweder schon mit '" + userName + "' geteilt oder Sie sind '" + userName + "'");
             } else if (this.status == 422) {
                 alert("Parameter ungültig. Haben Sie eine Liste ausgewählt?");
             }
