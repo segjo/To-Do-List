@@ -49,8 +49,8 @@ class ToDoList {
             return array('Response' => 422, 'Error' => $e->getMessage());
         }
     }
-    
-        public function edit($listId, $listName, $priority, $sortIndex) {
+
+    public function edit($listId, $listName, $priority, $sortIndex) {
         if (!FormValidator::validateItem($listId, 'number')) {
             return array('Response' => 422, 'ValdidateError' => 'listId');
         }
@@ -61,7 +61,7 @@ class ToDoList {
             if (!FormValidator::validateItem($priority, 'number')) {
                 return array('Response' => 422, 'ValdidateError' => 'priority');
             }
-            $sqlPriority = ", Priority = ".$priority;
+            $sqlPriority = ", Priority = " . $priority;
         } else {
             $sqlPriority = "";
         }
@@ -69,7 +69,7 @@ class ToDoList {
             if (!FormValidator::validateItem($sortIndex, 'number')) {
                 return array('Response' => 422, 'ValdidateError' => 'sortIndex');
             }
-            $sqlSortIndex = ", SortIndex = ".$sortIndex;
+            $sqlSortIndex = ", SortIndex = " . $sortIndex;
         } else {
             $sortIndex = "";
         }
@@ -79,17 +79,15 @@ class ToDoList {
 
         if ($this->checkListPermission($listId, true)) {
 
-                $sqlUpdateList = "UPDATE List SET Name = '" . $listName . "'". $sqlPriority . " " . $sqlSortIndex . ", UpdatedAt = '" . $date . "' WHERE ListId = " . $listId;         
-                $dbh = $this->db;
-                $stmt = $dbh->prepare($sqlUpdateList);
-                $updateList = $stmt->execute();
-                return array('Response' => 200, "success" => "true");
-
+            $sqlUpdateList = "UPDATE List SET Name = '" . $listName . "'" . $sqlPriority . " " . $sqlSortIndex . ", UpdatedAt = '" . $date . "' WHERE ListId = " . $listId;
+            $dbh = $this->db;
+            $stmt = $dbh->prepare($sqlUpdateList);
+            $updateList = $stmt->execute();
+            return array('Response' => 200, "success" => "true");
         } else {
             return array('Response' => 404);
         }
     }
-    
 
     public function share($listId, $userName, $mailer) {
         if (!FormValidator::validateItem($listId, 'number')) {
@@ -99,29 +97,33 @@ class ToDoList {
             return array('Response' => 422);
         }
         if ($this->checkListPermission($listId, true)) {
-            $sql = "SELECT UserId, Email FROM User WHERE UserName = '" . $userName . "' AND DeletedAt IS NULL";
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $result = $sth->fetchAll();
-            if (count($result) > 0) {
-                $userId = $result[0]['UserId'];
-                $email = $result[0]['Email'];
-                $shareCode = uniqid(mt_rand());
-                $senderUserId = $this->getOwnUserId();
-
-                $sql = "INSERT INTO `User2List`(`UserListId`, `UserId`, `ListId`, `Owner`, `ShareCode`, `ShareActivated`, `DeletedAt`) " .
-                        "VALUES (NULL," . $userId . "," . $listId . ",0,'" . $shareCode . "',0,NULL)";
-
+            if (!$this->checkIfUser2ListExist($this->getUserId($userName), $listId)) {
+                $sql = "SELECT UserId, Email FROM User WHERE UserName = '" . $userName . "' AND DeletedAt IS NULL";
                 $sth = $this->db->prepare($sql);
-                $insert = $sth->execute();
-                if ($insert) {
-                    $mailer->sendListShare($email, $this->getUserName($userId), $this->getUserName($senderUserId), $shareCode);
-                    return array('Response' => 201, 'Content' => array('sucess' => true, 'shareCode' => $shareCode));
+                $sth->execute();
+                $result = $sth->fetchAll();
+                if (count($result) > 0) {
+                    $userId = $result[0]['UserId'];
+                    $email = $result[0]['Email'];
+                    $shareCode = uniqid(mt_rand());
+                    $senderUserId = $this->getOwnUserId();
+
+                    $sql = "INSERT INTO `User2List`(`UserListId`, `UserId`, `ListId`, `Owner`, `ShareCode`, `ShareActivated`, `DeletedAt`) " .
+                            "VALUES (NULL," . $userId . "," . $listId . ",0,'" . $shareCode . "',0,NULL)";
+
+                    $sth = $this->db->prepare($sql);
+                    $insert = $sth->execute();
+                    if ($insert) {
+                        $mailer->sendListShare($email, $this->getUserName($userId), $this->getUserName($senderUserId), $shareCode);
+                        return array('Response' => 201, 'Content' => array('sucess' => true, 'shareCode' => $shareCode));
+                    } else {
+                        return array('Response' => 422);
+                    }
                 } else {
-                    return array('Response' => 422);
+                    return array('Response' => 404);
                 }
             } else {
-                return array('Response' => 404);
+                return array('Response' => 409);   //Relation already exist 
             }
         } else {
             return array('Response' => 404);
@@ -240,6 +242,21 @@ class ToDoList {
         }
     }
 
+    private function getUserId($userName) {
+        $sql = "SELECT UserId FROM User WHERE UserName = '" . $userName . "' AND DeletedAt IS NULL";
+
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $result = $sth->fetchAll();
+        if (count($result) > 0) {
+            foreach ($result as $row) {
+                return $row['UserId'];
+            }
+        } else {
+            return false;
+        }
+    }
+
     private function isUpdated($listId, $lastCall) {
         if ($this->checkListPermission($listId, false)) {
             $sql = "SELECT * FROM `List` LEFT JOIN Item ON Item.ListId=List.ListId " .
@@ -256,6 +273,19 @@ class ToDoList {
             } else {
                 return false;
             }
+        }
+    }
+
+    private function checkIfUser2ListExist($userId, $listId) {
+        $sql = "SELECT UserListId FROM User2List WHERE UserId=" . $userId . " AND ListId=" . $listId . " AND DeletedAt IS NULL";
+
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        $result = $sth->fetchAll();
+        if (count($result) > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
