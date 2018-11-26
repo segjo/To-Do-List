@@ -185,7 +185,7 @@ function mainView_AppendSharedListsToTodoListList() {
                         continue;
                     }
 
-                    todoListList.innerHTML += mainView_GetTodoListListItem(lists[i].ListId, lists[i].Name, true);
+                    todoListList.innerHTML += mainView_GetTodoListListItem(lists[i].ListId, lists[i].Name, true, lists[i].Owner);
                 }
             }
         }
@@ -349,7 +349,7 @@ function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
     }
 }
 
-function mainView_GetTodoListListItem(listId, title, sharedList) {
+function mainView_GetTodoListListItem(listId, title, sharedList, owner) {
 
     var listItem = '';
 
@@ -360,7 +360,7 @@ function mainView_GetTodoListListItem(listId, title, sharedList) {
     listItem += '  <small></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
-    listItem += '<small>' + (sharedList ? '<img src="img/icon_share.png" width="16" height="16">' : '') + '</small>';
+    listItem += '<small>' + (sharedList ? ('<img src="img/icon_share.png" width="16" height="16"> ' + (owner || "")) : '') + '</small>';
     listItem += '</a>';
     listItem += '</div>';
 
@@ -450,8 +450,12 @@ function mainView_ShareList(listId, userName, permission) {
         return;
     }
 
+    loadingMessageShow(true);
+
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
+        loadingMessageShow(false);
+
         if (this.readyState == 4) {
             if (this.status == 201) {
                 alert("Liste erfolgreich mit '" + userName + "' geteilt");
