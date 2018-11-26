@@ -450,8 +450,12 @@ function mainView_ShareList(listId, userName, permission) {
         return;
     }
 
+    loadingMessageShow(true);
+
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
+        loadingMessageShow(false);
+
         if (this.readyState == 4) {
             if (this.status == 201) {
                 alert("Liste erfolgreich mit '" + userName + "' geteilt");
