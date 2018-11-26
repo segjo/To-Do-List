@@ -422,11 +422,13 @@ function mainView_ShareList(listId, userName, permission) {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 201) {
-
+                alert("Liste erfolgreich mit '" + userName + "' geteilt");
             } else if (this.status == 401) {
-
+                loginScreen_ShowPage();
+            } else if (this.status == 404) {
+                alert("Der Benutzer '" + userName + "' existiert nicht");
             } else if (this.status == 422) {
-
+                alert("Parameter ungültig. Haben Sie eine Liste ausgewählt?");
             }
         }
     };
