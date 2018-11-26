@@ -142,7 +142,7 @@ function mainView_FillTodoListList(selectFirstList, selectListId) {
                 listListItems += '<div>';
 
                 for (var i = 0; i < lists.length; i++) {
-                    listListItems += mainView_GetTodoListListItem(lists[i].ListId, lists[i].Name);
+                    listListItems += mainView_GetTodoListListItem(lists[i].ListId, lists[i].Name, false);
                 }
 
                 listListItems += '</div>';
@@ -324,7 +324,7 @@ function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
     }
 }
 
-function mainView_GetTodoListListItem(listId, title) {
+function mainView_GetTodoListListItem(listId, title, sharedList) {
 
     var listItem = '';
 
@@ -335,7 +335,7 @@ function mainView_GetTodoListListItem(listId, title) {
     listItem += '  <small></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></p>';
-    listItem += '<small></small>';
+    listItem += '<small>' + (sharedList ? '<img src="img/icon_share.png" width="16" height="16">' : '') + '</small>';
     listItem += '</a>';
     listItem += '</div>';
 
@@ -412,7 +412,7 @@ function mainView_ShowListEntryDeadlineEditor(listId, entryId) {
 function mainView_ShareListFromEditorDialog() {
     var listId = document.getElementById("current_list_id").innerHTML;
     var userName = document.getElementById("txt_share_list_to").innerHTML;
-    var permission = document.getElementById("share_list_permission").innerHTML;
+    var permission = document.querySelector('input[name="share_list_permission"]:checked').value;
 
     mainView_ShareList(listId, userName, permission);
 }
