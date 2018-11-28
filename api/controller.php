@@ -218,19 +218,17 @@ switch ($urlPaths[URI_1]) {
                     }
                 }
             }
-        } else {
+        }
 
-            if ($urlPaths[URI_2] == 'activate' && URI_REQ == 'GET') {
+        if ($urlPaths[URI_2] == 'activate' && URI_REQ == 'GET') {
                 if (isset($_GET["activateCode"])) {
                     $shareCode = $_GET["activateCode"];
                     $returnValue = $listModel->activate($shareCode);
                 } else {
                     $returnValue = array('Response' => 400, 'Method' => "Todolist activate");
                 }
-            } else {
-                $returnValue = array('Response' => 401);
             }
-        }
+        
 
 
 
