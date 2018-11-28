@@ -361,12 +361,6 @@ function mainView_CreateList(listName) {
     xhr.send(formData);
 }
 
-function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
-    if (event.keyCode == 13) {
-        event.target.display = "none";
-    }
-}
-
 function mainView_GetTodoListListItem(listId, title, sharedList, owner) {
 
     var listItem = '';
@@ -492,7 +486,6 @@ function mainView_ShareList(listId, userName, permission) {
     };
 
     var formData = new FormData();
-    formData
     formData.append("userName", userName);
 
     xhr.open("POST", "/api/todolist/" + listId + "/share", true);
