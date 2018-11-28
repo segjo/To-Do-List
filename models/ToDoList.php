@@ -41,7 +41,6 @@ class ToDoList {
             }
 
             if ($insertFail) {
-                $dbh->commit();
                 return array('Response' => 422);
             }
         } catch (PDOExecption $e) {
