@@ -552,7 +552,6 @@ function mainView_Logout() {
     xhr.send(null);
 }
 
-
 function validation_validateName(name) {
     var regex = /^.{1,50}$/;
     var result = regex.test(name);
@@ -560,9 +559,10 @@ function validation_validateName(name) {
 }
 
 function validation_validateListDescription(description) {
-    var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}\$/;
-    var result = regex.test(description);
-    return result;
+    // var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}\$/;
+    // var result = regex.test(description);
+    // return result;e
+    return true;
 }
 
 function updateAvatarFileUrlInCookies(newFileUrl) {
@@ -570,8 +570,6 @@ function updateAvatarFileUrlInCookies(newFileUrl) {
     user.userAvatar = newFileUrl;
     Cookies.set('user', JSON.stringify(user));
 }
-
-
 
 function loadingMessageShow(show) {
     document.getElementById('loading_message').style.display = show ? 'block' : 'none';
