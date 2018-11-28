@@ -7,11 +7,10 @@
 ?> -->
 
 <!DOCTYPE html>
-<html>
+<html lang="de">
 
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <title>Login</title>
+    <title>ToDo-List LOGIN</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -26,15 +25,15 @@
 <body>
     <div class="container w-75">
         <h1 class="text-center">To-Do Liste</h1>
-        <img class="center-block" width="256" height="256" src="img/logo_todolist.png">
+        <img class="center-block" width="256" height="256" alt="ToDo-List LOGO" src="img/logo_todolist.png">
         <h3 class="text-center">Login</h3>
 
         <div class="form-group">
-            <label for="username">Username:</label>
+            <label for="userName">Username:</label>
             <input type="text" class="form-control " id="userName" name="userName" required>
         </div>
         <div class="form-group">
-            <label for="pwd">Password:</label>
+            <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
         <button onclick="loginScreen_ApiLogin();" class="btn btn-default">Login</button>

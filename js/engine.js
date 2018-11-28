@@ -83,17 +83,30 @@ function loginScreen_ShowPage() {
 }
 
 function registerScreen_RegisterUser() {
-    var firstName = document.getElementById("firstName").value;
-    var lastName = document.getElementById("lastName").value;
-    var email = document.getElementById("email").value;
-    var userName = document.getElementById("userName").value;
-    var password = document.getElementById("password").value;
+    var valid = true;
+    var firstNameElement = document.getElementById("firstName");
+    var lastNameElement = document.getElementById("lastName");
+    var emailElement = document.getElementById("email");
+    var userNameElement = document.getElementById("userName");
+    var passwordElement = document.getElementById("password");
+
+    if (validation_validateName(firstNameElement)) {
+        firstNameElement.style.borderColor = '';
+    } else {
+        firstNameElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (!valid) {
+        return;
+    }
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 201) {
-                loginScreen_ShowPage()
+                alert("Die Registrierung war erfolgreich. Bitte aktivieren Sie Ihr Konto mit dem an Ihre E-Mail Adresse gesendeter Link.");
+                loginScreen_ShowPage();
             } else if (this.status == 409) {
                 alert("Benutzername bereits registriert.");
             }
@@ -101,11 +114,11 @@ function registerScreen_RegisterUser() {
     };
 
     var formData = new FormData();
-    formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
-    formData.append("email", email);
-    formData.append("userName", userName);
-    formData.append("password", password);
+    formData.append("firstName", firstNameElement.value);
+    formData.append("lastName", lastNameElement.value);
+    formData.append("email", emailElement.value);
+    formData.append("userName", userNameElement.value);
+    formData.append("password", passwordElement.value);
 
     xhr.open("POST", "/api/profile/create", true);
     xhr.send(formData);
@@ -518,12 +531,6 @@ function mainView_AddEventListenerForAddNewListEntryInputBox(listId) {
     });
 }
 
-function updateAvatarFileUrlInCookies(newFileUrl) {
-    var user = JSON.parse(Cookies.get("user"));
-    user.userAvatar = newFileUrl;
-    Cookies.set('user', JSON.stringify(user));
-}
-
 function mainView_Logout() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -539,6 +546,21 @@ function mainView_Logout() {
     xhr.open("POST", "/api/profile/logout", true);
     xhr.send(null);
 }
+
+
+function validation_validateName(name) {
+    var regex = /^.{1,50}$/;
+    var result = regex.test(name);
+    return result;
+}
+
+function updateAvatarFileUrlInCookies(newFileUrl) {
+    var user = JSON.parse(Cookies.get("user"));
+    user.userAvatar = newFileUrl;
+    Cookies.set('user', JSON.stringify(user));
+}
+
+
 
 function loadingMessageShow(show) {
     document.getElementById('loading_message').style.display = show ? 'block' : 'none';
