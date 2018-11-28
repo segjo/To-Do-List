@@ -145,7 +145,7 @@ function mainView_FillTodoListList(selectFirstList, selectListId) {
         if (this.readyState == 4) {
             if (this.status == 200) {
 
-                var lists = JSON.parse(xhr.responseText).lists;
+                var lists = JSON.parse(xhr.responseText).lists || [];
                 var listListItems = '<div class="list-group" id="todo_list_list">';
 
                 listListItems += '<div class="list-group-item">';
@@ -189,7 +189,7 @@ function mainView_AppendSharedListsToTodoListList() {
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                var lists = JSON.parse(xhr.responseText).lists;
+                var lists = JSON.parse(xhr.responseText).lists || [];
                 var todoListList = document.getElementById("todo_list_list");
 
                 for (var i = 0; i < lists.length; i++) {
