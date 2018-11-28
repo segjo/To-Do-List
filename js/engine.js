@@ -337,6 +337,11 @@ function mainView_CreateListFromEditorDialog() {
 }
 
 function mainView_CreateList(listName) {
+    if (!validation_validateListDescription(listName)) {
+        alert("Die angegebene Listenbezeichnung ist ungültig.");
+        return;
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -551,6 +556,12 @@ function mainView_Logout() {
 function validation_validateName(name) {
     var regex = /^.{1,50}$/;
     var result = regex.test(name);
+    return result;
+}
+
+function validation_validateListDescription(description) {
+    var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}\$/;
+    var result = regex.test(description);
     return result;
 }
 
