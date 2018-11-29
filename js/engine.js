@@ -91,37 +91,37 @@ function registerScreen_RegisterUser() {
     var passwordElement = document.getElementById("password");
 
     if (validation_validateName(firstNameElement.value)) {
-        firstNameElement.style.borderColor = '';
+        firstNameElement.style.backgroundColor = '';
     } else {
-        firstNameElement.style.borderColor = 'red';
+        firstNameElement.style.backgroundColor = 'red';
         valid = false;
     }
 
     if (validation_validateName(lastNameElement.value)) {
-        lastNameElement.style.borderColor = '';
+        lastNameElement.style.backgroundColor = '';
     } else {
-        lastNameElement.style.borderColor = 'red';
+        lastNameElement.style.backgroundColor = 'red';
         valid = false;
     }
 
     if (validation_validateEmail(emailElement.value)) {
-        emailElement.style.borderColor = '';
+        emailElement.style.backgroundColor = '';
     } else {
-        emailElement.style.borderColor = 'red';
+        emailElement.style.backgroundColor = 'red';
         valid = false;
     }
 
     if (validation_validateUserName(userNameElement.value)) {
-        userNameElement.style.borderColor = '';
+        userNameElement.style.backgroundColor = '';
     } else {
-        userNameElement.style.borderColor = 'red';
+        userNameElement.style.backgroundColor = 'red';
         valid = false;
     }
 
     if (validation_validatePassword(passwordElement.value)) {
-        passwordElement.style.borderColor = '';
+        passwordElement.style.backgroundColor = '';
     } else {
-        passwordElement.style.borderColor = 'red';
+        passwordElement.style.backgroundColor = 'red';
         valid = false;
     }
 
