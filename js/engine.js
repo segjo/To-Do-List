@@ -125,10 +125,10 @@ function registerScreen_RegisterUser() {
         passwordElement.style.borderColor = 'red';
         valid = false;
     }
-    if (validation_validatePassword(passwordConfirmElementElement.value) && passwordElement.value == passwordConfirmElement.value) {
-        passwordConfirmElementElement.style.borderColor = '';
+    if (validation_validatePassword(passwordConfirmElement.value) && passwordElement.value == passwordConfirmElement.value) {
+        passwordConfirmElement.style.borderColor = '';
     } else {
-        passwordConfirmElementElement.style.borderColor = 'red';
+        passwordConfirmElement.style.borderColor = 'red';
         valid = false;
     }
 
