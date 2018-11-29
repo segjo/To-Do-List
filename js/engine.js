@@ -89,39 +89,46 @@ function registerScreen_RegisterUser() {
     var emailElement = document.getElementById("email");
     var userNameElement = document.getElementById("userName");
     var passwordElement = document.getElementById("password");
+    var passwordConfirmElement = document.getElementById("password_confirm");
 
     if (validation_validateName(firstNameElement.value)) {
-        firstNameElement.style.backgroundColor = '';
+        firstNameElement.style.borderColor = '';
     } else {
-        firstNameElement.style.backgroundColor = 'red';
+        firstNameElement.style.borderColor = 'red';
         valid = false;
     }
 
     if (validation_validateName(lastNameElement.value)) {
-        lastNameElement.style.backgroundColor = '';
+        lastNameElement.style.borderColor = '';
     } else {
-        lastNameElement.style.backgroundColor = 'red';
+        lastNameElement.style.borderColor = 'red';
         valid = false;
     }
 
     if (validation_validateEmail(emailElement.value)) {
-        emailElement.style.backgroundColor = '';
+        emailElement.style.borderColor = '';
     } else {
-        emailElement.style.backgroundColor = 'red';
+        emailElement.style.borderColor = 'red';
         valid = false;
     }
 
     if (validation_validateUserName(userNameElement.value)) {
-        userNameElement.style.backgroundColor = '';
+        userNameElement.style.borderColor = '';
     } else {
-        userNameElement.style.backgroundColor = 'red';
+        userNameElement.style.borderColor = 'red';
         valid = false;
     }
 
-    if (validation_validatePassword(passwordElement.value)) {
-        passwordElement.style.backgroundColor = '';
+    if (validation_validatePassword(passwordElement.value) && passwordElement.value == passwordConfirmElement.value) {
+        passwordElement.style.borderColor = '';
     } else {
-        passwordElement.style.backgroundColor = 'red';
+        passwordElement.style.borderColor = 'red';
+        valid = false;
+    }
+    if (validation_validatePassword(passwordConfirmElementElement.value) && passwordElement.value == passwordConfirmElement.value) {
+        passwordConfirmElementElement.style.borderColor = '';
+    } else {
+        passwordConfirmElementElement.style.borderColor = 'red';
         valid = false;
     }
 
