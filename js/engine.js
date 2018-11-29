@@ -90,10 +90,38 @@ function registerScreen_RegisterUser() {
     var userNameElement = document.getElementById("userName");
     var passwordElement = document.getElementById("password");
 
-    if (validation_validateName(firstNameElement)) {
+    if (validation_validateName(firstNameElement.value)) {
         firstNameElement.style.borderColor = '';
     } else {
         firstNameElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validateName(lastNameElement.value)) {
+        lastNameElement.style.borderColor = '';
+    } else {
+        lastNameElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validateEmail(emailElement.value)) {
+        emailElement.style.borderColor = '';
+    } else {
+        emailElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validateUserName(userNameElement.value)) {
+        userNameElement.style.borderColor = '';
+    } else {
+        userNameElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validatePassword(passwordElement.value)) {
+        passwordElement.style.borderColor = '';
+    } else {
+        passwordElement.style.borderColor = 'red';
         valid = false;
     }
 
@@ -338,7 +366,7 @@ function mainView_CreateListFromEditorDialog() {
 
 function mainView_CreateList(listName) {
     if (!validation_validateListDescription(listName)) {
-        alert("Die angegebene Listenbezeichnung ist ungültig.");
+        $('#modal_invalid_entry').modal();
         return;
     }
 
@@ -494,9 +522,10 @@ function mainView_ShareList(listId, userName, permission) {
 
 function mainView_addTodoListItem(listId, itemDescription) {
     if (!validation_validateListDescription(itemDescription)) {
-        alert("Der angegebene Eintrag ist ungültig.");
+        $('#modal_invalid_entry').modal();
         return;
     }
+
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -559,6 +588,18 @@ function validation_validatePassword(password) {
 function validation_validateListDescription(description) {
     var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}/;
     var result = regex.test(description);
+    return result;
+}
+
+function validation_validateEmail(email) {
+    var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var result = regex.test(String(email).toLowerCase());
+    return result;
+}
+
+function validation_validateUserName(userName) {
+    var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{5,15}/;
+    var result = regex.test(userName);
     return result;
 }
 
