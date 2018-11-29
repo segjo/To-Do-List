@@ -492,12 +492,11 @@ function mainView_ShareList(listId, userName, permission) {
     xhr.send(formData);
 }
 
-function mainView_ShowListEntryItemEditor(element, listId, entryId) {
-
-}
-
 function mainView_addTodoListItem(listId, itemDescription) {
-
+    if (!validation_validateListDescription(itemDescription)) {
+        alert("Der angegebene Eintrag ist ungültig.");
+        return;
+    }
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
@@ -551,11 +550,16 @@ function validation_validateName(name) {
     return result;
 }
 
+function validation_validatePassword(password) {
+    var regex = /^.{8,50}$/;
+    var result = regex.test(password);
+    return result;
+}
+
 function validation_validateListDescription(description) {
-    // var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}\$/;
-    // var result = regex.test(description);
-    // return result;e
-    return true;
+    var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}/;
+    var result = regex.test(description);
+    return result;
 }
 
 function updateAvatarFileUrlInCookies(newFileUrl) {
