@@ -176,7 +176,8 @@ class FormValidator
     {
         if(array_key_exists($type, self::$regexes))
         {
-            $returnval =  filter_var($var, FILTER_VALIDATE_REGEXP, array("options"=> array("regexp"=>'!'.self::$regexes[$type].'!i'))) !== false;
+            $returnval =  filter_var($var, FILTER_VALIDATE_REGEXP, array("options"=> array("regexp"=>'/'.self::$regexes[$type].'/'))) !== false;
+            
             return($returnval);
         }
         $filter = false;
