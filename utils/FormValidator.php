@@ -32,12 +32,12 @@ class FormValidator
             '2digitopt' => "^\d+(\,\d{2})?\$",
             '2digitforce' => "^\d+\,\d\d\$",
             'anything' => "^[\d\D]{1,}\$",
-            'username' => "^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{5,15}\$",
-            'name' => "^.{1,50}$",
+            'username' => "^[0-9a-zA-Z][^#&<>\"~;$^%?!{}]{5,30}\$",
+            'name' => "^[0-9a-zA-Z][^#&<>\"~;$^%?{}]{1,50}\$",
             'password' => "^.{8,50}$",
-            'listname' => "^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,15}\$",
-            'itemname' => "^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{0,200}\$",
-            'activatecode' => "^[a-zA-Z0-9]{10,100}\$",
+            'listname' => "^[0-9a-zA-Z][^#&<>\"~;$^%{}]{2,15}\$",
+            'itemname' => "^[0-9a-zA-Z][^#&<>\"~;$^%{}]{1,100}\$",
+            'activatecode' => "^[0-9a-zA-Z][^#&<>\"~;$^%?!{}]{10,100}\$",
     );
     private $validations, $sanatations, $mandatories, $errors, $corrects, $fields;
 
