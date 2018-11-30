@@ -52,10 +52,10 @@ class ListItem {
         }
         if ($deadline != "") {
             if (!(FormValidator::validateItem($deadline, 'datetime')||FormValidator::validateItem($deadline, 'date'))) {
-                return array('Response' => 422, 'ValdidateError' => 'deadline');
+                return array('Response' => 422, 'ValdidateError' => 'deadline - Regex validation');
             }
             if(!$this->is_date($deadline)){
-                return array('Response' => 422, 'ValdidateError' => 'deadline');
+                return array('Response' => 422, 'ValdidateError' => 'deadline - PHP validation');
             }
             
             $deadline = "'" . $deadline . "'";
