@@ -89,11 +89,46 @@ function registerScreen_RegisterUser() {
     var emailElement = document.getElementById("email");
     var userNameElement = document.getElementById("userName");
     var passwordElement = document.getElementById("password");
+    var passwordConfirmElement = document.getElementById("password_confirm");
 
-    if (validation_validateName(firstNameElement)) {
+    if (validation_validateName(firstNameElement.value)) {
         firstNameElement.style.borderColor = '';
     } else {
         firstNameElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validateName(lastNameElement.value)) {
+        lastNameElement.style.borderColor = '';
+    } else {
+        lastNameElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validateEmail(emailElement.value)) {
+        emailElement.style.borderColor = '';
+    } else {
+        emailElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validateUserName(userNameElement.value)) {
+        userNameElement.style.borderColor = '';
+    } else {
+        userNameElement.style.borderColor = 'red';
+        valid = false;
+    }
+
+    if (validation_validatePassword(passwordElement.value) && passwordElement.value == passwordConfirmElement.value) {
+        passwordElement.style.borderColor = '';
+    } else {
+        passwordElement.style.borderColor = 'red';
+        valid = false;
+    }
+    if (validation_validatePassword(passwordConfirmElement.value) && passwordElement.value == passwordConfirmElement.value) {
+        passwordConfirmElement.style.borderColor = '';
+    } else {
+        passwordConfirmElement.style.borderColor = 'red';
         valid = false;
     }
 
@@ -338,7 +373,7 @@ function mainView_CreateListFromEditorDialog() {
 
 function mainView_CreateList(listName) {
     if (!validation_validateListDescription(listName)) {
-        alert("Die angegebene Listenbezeichnung ist ungültig.");
+        $('#modal_invalid_entry').modal();
         return;
     }
 
@@ -359,12 +394,6 @@ function mainView_CreateList(listName) {
 
     xhr.open("POST", "/api/todolist/create", true);
     xhr.send(formData);
-}
-
-function mainView_UpdateTodoListEntryDescriptionTextBoxEvent(event, entryId) {
-    if (event.keyCode == 13) {
-        event.target.display = "none";
-    }
 }
 
 function mainView_GetTodoListListItem(listId, title, sharedList, owner) {
@@ -402,7 +431,7 @@ function mainView_GetTodoListEntryItem(listId, entryId, itemDescription, deadlin
     listItem += '     </div>';
     listItem += '     <span id="entry_description_' + entryId + '" onclick="javascript:mainView_ShowListEntryItemEditor(this, ' + listId + ', ' + entryId + ');">' + itemDescription + '</span>';
     listItem += '  </h5>';
-    listItem += '  <small><img class="icon_small float-right" src="img/icon_delete2.png" onclick="mainView_ShowListEntryDeleteConfirmDialog(' + listId + ', ' + entryId + ');"><img class="icon_small float-right" src="img/icon_priority.png" data-toggle="modal" data-target="#modal_set_priority"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
+    listItem += '  <small><img class="icon_small float-right" src="img/icon_delete2.png" onclick="mainView_ShowListEntryDeleteConfirmDialog(' + listId + ', ' + entryId + ');"><img class="icon_small float-right" src="img/icon_calendar.png" onclick="mainView_ShowListEntryDeadlineEditor(' + listId + ', ' + entryId + ');"></small>';
     listItem += '</div>';
     listItem += '<p class="mb-1"></span></p>';
     listItem += '<small><span class="">' + priority + '</span><span class="' + deadline_element_class + '" id="entry_deadline_' + entryId + '">' + deadline + '</span></small>';
@@ -492,18 +521,17 @@ function mainView_ShareList(listId, userName, permission) {
     };
 
     var formData = new FormData();
-    formData
     formData.append("userName", userName);
 
     xhr.open("POST", "/api/todolist/" + listId + "/share", true);
     xhr.send(formData);
 }
 
-function mainView_ShowListEntryItemEditor(element, listId, entryId) {
-
-}
-
 function mainView_addTodoListItem(listId, itemDescription) {
+    if (!validation_validateListDescription(itemDescription)) {
+        $('#modal_invalid_entry').modal();
+        return;
+    }
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -552,16 +580,33 @@ function mainView_Logout() {
     xhr.send(null);
 }
 
-
 function validation_validateName(name) {
     var regex = /^.{1,50}$/;
     var result = regex.test(name);
     return result;
 }
 
+function validation_validatePassword(password) {
+    var regex = /^.{8,50}$/;
+    var result = regex.test(password);
+    return result;
+}
+
 function validation_validateListDescription(description) {
-    var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}\$/;
+    var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{2,80}/;
     var result = regex.test(description);
+    return result;
+}
+
+function validation_validateEmail(email) {
+    var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var result = regex.test(String(email).toLowerCase());
+    return result;
+}
+
+function validation_validateUserName(userName) {
+    var regex = /^[äöüÄÖÜ0-9a-zA-Z ,.-_\\s\?\!]{5,15}/;
+    var result = regex.test(userName);
     return result;
 }
 
@@ -570,8 +615,6 @@ function updateAvatarFileUrlInCookies(newFileUrl) {
     user.userAvatar = newFileUrl;
     Cookies.set('user', JSON.stringify(user));
 }
-
-
 
 function loadingMessageShow(show) {
     document.getElementById('loading_message').style.display = show ? 'block' : 'none';
